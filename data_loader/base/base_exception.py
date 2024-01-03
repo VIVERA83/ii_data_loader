@@ -1,0 +1,32 @@
+class ExceptionBase(Exception):
+    """
+    Base class for exceptions.
+
+    Args:
+        args (str): The error message.
+        exception (Exception): The original exception that caused this exception to be raised.
+
+    Attributes:
+        args (str): The error message.
+        exception (Exception): The original exception that caused this exception to be raised.
+    """
+
+    def __init__(self, *args, exception: Exception = None):
+        """
+        Initialize the ExceptionBase instance.
+
+        Args:
+            args (str): The error message.
+            exception (Exception): The original exception that caused this exception to be raised.
+        """
+        self.args = args
+        self.exception = exception
+
+    def __str__(self):
+        """
+        Return the error message.
+
+        Returns:
+            str: The error message.
+        """
+        return f"Error: {self.args[0]}"
