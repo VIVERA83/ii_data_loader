@@ -1,6 +1,7 @@
 """Место окончательной сборки приложения."""
 from core.components import Application
 from core.logger import setup_logging
+from core.middelware import setup_middleware
 from core.routes import setup_routes
 from core.settings import AppSettings
 
@@ -26,7 +27,7 @@ def setup_app() -> "Application":
     app.settings = settings
     setup_logging(app)
     # setup_store(application)
-    # setup_middleware(application)
+    setup_middleware(app)
     setup_routes(app)
     app.logger.info(
         f"Swagger link: {app.settings.base_url}{app.docs_url}"
