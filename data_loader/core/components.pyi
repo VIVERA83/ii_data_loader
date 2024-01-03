@@ -1,31 +1,33 @@
 import logging
 from typing import Optional
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request as FastAPIRequest
 
-# from base.type_hint import Public_access
-# from core.settings import Settings
-# from core.utils import Token
-# from fastapi import Request as FastAPIRequest
-# from store.database.postgres import Postgres
-# from store.database.redis import RedisAccessor
-# from store.store import Store
+from core.settings import AppSettings
+from store.store import Store
 
 class Application(FastAPI):
-    """Application главный класс.
+    """The main application class.
 
-    Описываем сервисы, которые будут использоваться в приложении.
-    Так же это нужно для корректной подсказки IDE.
+    This class is responsible for initializing the FastAPI application,
+    as well as managing the dependencies and configuration of the application.
+
+    Attributes:
+        store (Store): The store instance.
+        settings (AppSettings): The application settings.
+        logger (logging.Logger): The application logger.
+        docs_url (str): The URL of the documentation.
     """
 
     store: Store
-    settings: Settings
+    settings: AppSettings
     logger: logging.Logger
     docs_url: str
 
 class Request(FastAPIRequest):
-    """Переопределения Request.
+    """Request overrides.
 
-    Для корректной подсказки IDE по методам `Application`."""
+    To correctly prompt the IDE for the `Application` methods.
+    """
 
     app: Optional["Application"] = None

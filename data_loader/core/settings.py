@@ -3,11 +3,7 @@ import os
 
 from pydantic import field_validator, BaseModel
 
-# from base.type_hint import ALGORITHM, HEADERS, METHOD
-# from core.utils import ALGORITHMS
-# from pydantic import BaseModel, Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings
-from logging import getLogger
 
 from data_loader.base.type_hint import LOG_LEVEL
 
@@ -45,7 +41,7 @@ class UvicornSettings(Base):
     reload: bool
 
     @field_validator("log_level")
-    def to_lower_case(cls, log_level: LOG_LEVEL) -> str:
+    def to_lower_case(cls, log_level: LOG_LEVEL) -> str:  # noqa:
         """Convert the log level to lower case.
 
         Args:
@@ -60,14 +56,15 @@ class UvicornSettings(Base):
 class AppSettings(BaseModel):
     """Application settings class.
 
-       Args:
-           title (str): The name of the application.
-           description (str): The description of the application.
-           version (str): The version of the application.
-           docs_url (str): The URL for the application's documentation.
-           redoc_url (str): The URL for the application's redoc.
-           openapi_url (str): The URL for the application's openapi.json.
+    Args:
+        title (str): The name of the application.
+        description (str): The description of the application.
+        version (str): The version of the application.
+        docs_url (str): The URL for the application's documentation.
+        redoc_url (str): The URL for the application's redoc.
+        openapi_url (str): The URL for the application's openapi.json.
     """
+
     title: str = "Data Loader"
     description: str = "Data download service"
     version: str = "0.0.1"
@@ -85,7 +82,7 @@ class AppSettings(BaseModel):
         Returns:
             str: The base URL for the application.
         """
-        return f"http://{self.app_host}:{self.app_port}"
+        return f"http://{self.app_host}:{self.app_port}"  # noqa:
 
 
 class LogSettings(BaseModel):

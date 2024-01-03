@@ -29,9 +29,7 @@ def setup_app() -> "Application":
     # setup_store(application)
     setup_middleware(app)
     setup_routes(app)
-    app.logger.info(
-        f"Swagger link: {app.settings.base_url}{app.docs_url}"
-    )
+    app.logger.info(f"Swagger link: {app.settings.base_url}{app.docs_url}")
     return app
 
 

@@ -1,12 +1,28 @@
+import logging
+
 from fastapi import FastAPI
+
+from core.settings import AppSettings
+from store.store import Store
 
 
 class Application(FastAPI):
-    """Application is the main class.
+    """The main application class.
 
-    It describes the services that will be used in the application.
-    This is necessary for correct IDE suggestions.
+    This class is responsible for initializing the FastAPI application,
+    as well as managing the dependencies and configuration of the application.
+
+    Attributes:
+        store (Store): The store instance.
+        settings (AppSettings): The application settings.
+        logger (logging.Logger): The application logger.
+        docs_url (str): The URL of the documentation.
     """
+
+    store: Store
+    settings: AppSettings
+    logger: logging.Logger
+    docs_url: str
 
     # settings: Settings
     # store: Store
