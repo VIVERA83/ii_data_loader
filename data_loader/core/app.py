@@ -1,5 +1,8 @@
 """Место окончательной сборки приложения."""
 from core.components import Application
+from core.logger import setup_logging
+from core.routes import setup_routes
+from core.settings import AppSettings
 
 
 # from core.logger import setup_logging
@@ -10,21 +13,25 @@ from core.components import Application
 
 
 def setup_app() -> "Application":
-    """Место сборки приложения, подключения бд, роутов, и т.д"""
-    application = Application(
-        docs_url="/docs/blog",
-        redoc_url="/redoc/blog",
-        openapi_url="/docs/blog/openapi.json",
+    """The place where the application is built, database connections, routes, etc."""
+    settings = AppSettings()
+    app = Application(
+        docs_url=settings.docs_url,
+        redoc_url=settings.redoc_url,
+        openapi_url=settings.openapi_url,
+        version=settings.version,
+        title=settings.title,
+        description=settings.description,
     )
-    # application.settings = Settings()
-    # setup_logging(application)
+    app.settings = settings
+    setup_logging(app)
     # setup_store(application)
     # setup_middleware(application)
-    # setup_routes(application)
-    # application.logger.info(
-    #     f"Swagger link: {application.settings.base_url}{application.docs_url}"
-    # )
-    return application
+    setup_routes(app)
+    app.logger.info(
+        f"Swagger link: {app.settings.base_url}{app.docs_url}"
+    )
+    return app
 
 
-app = setup_app()
+# application = setup_app()

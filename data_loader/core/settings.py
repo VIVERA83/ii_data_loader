@@ -1,7 +1,7 @@
-"""Модуль начальных настроек приложения."""
+"""All application settings."""
 import os
 
-from pydantic import field_validator
+from pydantic import field_validator, BaseModel
 
 # from base.type_hint import ALGORITHM, HEADERS, METHOD
 # from core.utils import ALGORITHMS
@@ -28,8 +28,7 @@ class Base(BaseSettings):
 
 
 class UvicornSettings(Base):
-    """
-    Uvicorn settings class.
+    """Uvicorn settings class.
 
     Args:
         host (str): Hostname.
@@ -56,6 +55,50 @@ class UvicornSettings(Base):
             str: The converted log level.
         """
         return log_level.lower()
+
+
+class AppSettings(BaseModel):
+    """Application settings class.
+
+       Args:
+           title (str): The name of the application.
+           description (str): The description of the application.
+           version (str): The version of the application.
+           docs_url (str): The URL for the application's documentation.
+           redoc_url (str): The URL for the application's redoc.
+           openapi_url (str): The URL for the application's openapi.json.
+    """
+    title: str = "Data Loader"
+    description: str = "Data download service"
+    version: str = "0.0.1"
+    docs_url: str = "/docs"
+    redoc_url: str = "/redoc"
+    openapi_url: str = "/openapi.json"
+
+    app_host: str = "localhost"
+    app_port: int = 8004
+
+    @property
+    def base_url(self) -> str:
+        """The base URL for the application.
+
+        Returns:
+            str: The base URL for the application.
+        """
+        return f"http://{self.app_host}:{self.app_port}"
+
+
+class LogSettings(BaseModel):
+    """Setting logging.
+
+    level (str, optional): The level of logging. Defaults to "INFO".
+    guru (bool, optional): Whether to enable guru mode. Defaults to True.
+    traceback (bool, optional): Whether to include tracebacks in logs. Defaults to True.
+    """
+
+    level: str = "INFO"
+    guru: bool = True
+    traceback: bool = True
 
 
 class FileSettings(Base):

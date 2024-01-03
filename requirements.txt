@@ -5,6 +5,8 @@ starlette==0.32.0.post1
 fastapi==0.108.0
 sqlalchemy==2.0.25
 filetype==1.2.0
+python-multipart==0.0.6
+loguru==0.7.2
 
 
 

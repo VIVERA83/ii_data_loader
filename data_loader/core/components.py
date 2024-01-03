@@ -1,13 +1,11 @@
-"""Переназначенные компоненты Fast-Api."""
-
 from fastapi import FastAPI
 
 
 class Application(FastAPI):
-    """Application главный класс.
+    """Application is the main class.
 
-    Описываем сервисы, которые будут использоваться в приложении.
-    Так же это нужно для корректной подсказки IDE.
+    It describes the services that will be used in the application.
+    This is necessary for correct IDE suggestions.
     """
 
     # settings: Settings

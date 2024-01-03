@@ -1,8 +1,7 @@
-""""Routes приложения """
 from core.components import Application
-from labor_protect.views import labor_protect_route
+from downloader_file.views import downloader_file_route
 
 
 def setup_routes(app: Application):
-    """Настройка подключаемых route к приложению."""
-    app.include_router(labor_protect_route)
+    """Configuring the connected routes to the application."""
+    app.include_router(downloader_file_route)

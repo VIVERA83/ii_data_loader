@@ -1,18 +1,17 @@
-"""Логирование."""
 import logging
 import sys
 
-from core.settings import Settings
+from core.settings import LogSettings
 from loguru import logger
 
 
 def setup_logging(app) -> None:
-    """Настройка логирования в приложении.
+    """Setting up logging in the application.
 
-    В данном случае есть вариант использовать loguru.
+    In this case, there is an option to use logo ru.
     https://github.com/Delgan/loguru
     """
-    settings = Settings().app_logging
+    settings = LogSettings()
     if settings.guru:
         logger.configure(
             **{
