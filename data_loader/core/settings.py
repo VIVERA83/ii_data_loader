@@ -2,6 +2,7 @@
 import os
 
 from pydantic import field_validator
+
 # from base.type_hint import ALGORITHM, HEADERS, METHOD
 # from core.utils import ALGORITHMS
 # from pydantic import BaseModel, Field, SecretStr, field_validator
@@ -55,3 +56,7 @@ class UvicornSettings(Base):
             str: The converted log level.
         """
         return log_level.lower()
+
+
+class FileSettings(Base):
+    size: int = 1024 * 1024 * 10

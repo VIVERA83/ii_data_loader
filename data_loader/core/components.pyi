@@ -2,6 +2,7 @@ import logging
 from typing import Optional
 
 from fastapi import FastAPI
+
 # from base.type_hint import Public_access
 # from core.settings import Settings
 # from core.utils import Token
@@ -22,11 +23,9 @@ class Application(FastAPI):
     logger: logging.Logger
     docs_url: str
 
-
 class Request(FastAPIRequest):
     """Переопределения Request.
 
     Для корректной подсказки IDE по методам `Application`."""
 
     app: Optional["Application"] = None
-

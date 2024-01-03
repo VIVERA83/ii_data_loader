@@ -1,3 +1,10 @@
 uvicorn==0.25.0
+pydantic==2.5.3
+pydantic-settings==2.1.0
+starlette==0.32.0.post1
 fastapi==0.108.0
 sqlalchemy==2.0.25
+filetype==1.2.0
+
+
+

@@ -123,7 +123,7 @@ class Postgres(BaseAccessor):
 
     @staticmethod
     def get_query_update_by_field(
-            model: Model, field_name: str, field_value: Any, **update_data
+        model: Model, field_name: str, field_value: Any, **update_data
     ) -> Query:
         """Get query update records by field.
 
@@ -143,7 +143,7 @@ class Postgres(BaseAccessor):
 
     @staticmethod
     def get_query_delete_by_field(
-            model: Model, field_name: str, field_value: Any
+        model: Model, field_name: str, field_value: Any
     ) -> Delete:
         """Get query delete records in Table.
 
@@ -159,7 +159,7 @@ class Postgres(BaseAccessor):
 
     @staticmethod
     def get_query_select_by_field(
-            model: Model, field_name: str, field_value: Any
+        model: Model, field_name: str, field_value: Any
     ) -> Query:
         """Get a query by field name.
 
@@ -205,7 +205,7 @@ class Postgres(BaseAccessor):
 
     @staticmethod
     def get_query_filter(
-            model: Model, page: int = 0, size: int = 10, sort_params: Sorted_order = None
+        model: Model, page: int = 0, size: int = 10, sort_params: Sorted_order = None
     ) -> Query:
         """Get query filter by sorted parameters.
 
