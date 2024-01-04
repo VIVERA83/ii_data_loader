@@ -2,27 +2,38 @@ from io import BytesIO
 from typing import Any
 
 from fastapi import APIRouter
-from icecream import ic
 
 from core.components import Request
 from downloader.schemes import OkSchema, UploadFileSchema
 
-downloader_file_route = APIRouter(prefix="/downloader", tags=["TOPIC"])
+downloader_route = APIRouter(prefix="/downloader", tags=["TOPIC"])
 
 
-@downloader_file_route.post(
-    "/add_pl_from_file",
-    summary="Добавить пл из файла",
-    description="Добавить данные пл из `excel` файла. Полученные данные начинают обрабатываться немедленно. <br>"
-    "Обратите внимание:\n"
-    " - обрабатывается только первый лист\n"
-    " - размер файла ограничен 1 Мб\n",
+@downloader_route.post(
+    "/add_data_from_file",
+    summary="Add data from file",
+    description="Add PL or channel data from an `excel` file. "
+    "Received data is processed immediately. <br>"
+    "Note: \n"
+    " - Only the first sheet is processed.\n"
+    " - The file size is limited.\n",
     response_model=OkSchema,
 )
-async def add_data_from_excel(request: "Request", file: UploadFileSchema) -> Any:
-    ic(
-        await request.app.store.ya_disk.upload_file(
-            BytesIO(await file.read()), file.filename
-        )
+async def add_pl_from_file(request: "Request", file: UploadFileSchema) -> Any:
+    """
+    This function is used to add data file to the cloud.
+
+    Args:
+        request (Request): The request object.
+        file (UploadFileSchema): The file to be uploaded.
+
+    Returns:
+        Any: Returns an OK schema with a message.
+
+    """
+    await request.app.store.ya_disk.upload_file(
+        BytesIO(await file.read()), file.filename
     )
-    return OkSchema(message=f"{request.client}")
+    return OkSchema(
+        message=f"Data successfully sent to queue for addition to the database"
+    )
