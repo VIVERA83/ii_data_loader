@@ -8,6 +8,15 @@ from starlette.responses import JSONResponse
 
 
 class ExceptionHandler:
+    """This class is used to handle all exceptions that occur in the application.
+    It provides a standardized way to log and return errors to the user.
+
+    Args:
+        log_level (LOG_LEVEL, optional): The log level to use. Defaults to "INFO".
+        is_traceback (bool, optional): To enable or not to enable backtracking in the response.
+        By default, the value is set to False.
+    """
+
     def __init__(self, log_level: LOG_LEVEL = "INFO", is_traceback: bool = False):
         self.exception = Exception("Unknown error...")
         self.level = log_level
@@ -29,7 +38,8 @@ class ExceptionHandler:
             exception (Exception): The exception that was raised.
             url (URL): The URL of the request that caused the exception.
             logger (Logger, optional): The logger to use. Defaults to None.
-            is_traceback (bool, optional): Whether or not to include a traceback in the response. Defaults to False.
+            is_traceback (bool, optional): To enable or not to enable backtracking in the response.
+            By default, the value is set to False.
 
         Returns:
             JSONResponse: A JSON response containing the error details.
