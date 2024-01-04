@@ -9,25 +9,28 @@ from core.components import Application
 from fastapi import Request as FastApiRequest, Response, status
 from fastapi.responses import JSONResponse
 from core.exception_handler import ExceptionHandler
+
 from core.settings import LogSettings
 
 
 class ErrorHandlingMiddleware(BaseHTTPMiddleware):
     """
-    Custom middleware to handle exceptions and errors in the application.
+    Custom middleware for handling exceptions and errors in the FastAPI application.
 
     Args:
-        app (ASGIApp): The ASGI application.
+        app (ASGIApp): The FastAPI application.
 
     Attributes:
-        is_traceback (bool): Whether to include stack tracing in the application log.
+        settings (LogSettings): The log application settings.
         exception_handler (ExceptionHandler): The exception handler.
     """
 
     def __init__(self, app: ASGIApp):
         super().__init__(app)
-        self.is_traceback = LogSettings().traceback
-        self.exception_handler = ExceptionHandler()
+        self.settings = LogSettings()
+        self.exception_handler = ExceptionHandler(
+            self.settings.level, self.settings.traceback
+        )
 
     async def dispatch(
         self, request: FastApiRequest, call_next: RequestResponseEndpoint
@@ -51,12 +54,7 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
             response = await call_next(request)
             return response
         except Exception as error:
-            return self.exception_handler(
-                error,
-                request.url,
-                request.app.logger,
-                is_traceback=self.is_traceback,
-            )
+            return self.exception_handler(error, request.url, request.app.logger)
 
     @staticmethod
     def is_endpoint(request: FastApiRequest) -> bool:
