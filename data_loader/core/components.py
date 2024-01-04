@@ -1,6 +1,6 @@
 import logging
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request as FastAPIRequest
 
 from core.settings import AppSettings
 from store.store import Store
@@ -24,10 +24,15 @@ class Application(FastAPI):
     logger: logging.Logger
     docs_url: str
 
-    # settings: Settings
-    # store: Store
     # redis: RedisAccessor
     # postgres: Postgres
-    # logger: logging.Logger
-    # docs_url: Url
     # public_access: Public_access
+
+
+class Request(FastAPIRequest):
+    """Request overrides.
+
+    To correctly prompt the IDE for the `Application` methods.
+    """
+
+    app: Application

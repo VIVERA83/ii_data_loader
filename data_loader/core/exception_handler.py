@@ -2,9 +2,10 @@ import logging
 import traceback
 from logging import Logger
 
-from core.utils import HTTP_EXCEPTION
-from httpcore import URL
 from icecream import ic
+
+from base.base_helper import HTTP_EXCEPTION
+from httpcore import URL
 from starlette import status
 from starlette.responses import JSONResponse
 

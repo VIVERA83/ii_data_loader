@@ -1,3 +1,4 @@
+from io import BytesIO
 from typing import Type, Any, Callable
 from fastapi import File
 from pydantic import GetJsonSchemaHandler, BaseModel

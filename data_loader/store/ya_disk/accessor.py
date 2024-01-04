@@ -102,14 +102,14 @@ class YaDiskAccessor(BaseAccessor):
         number = 0
         while number < self.settings.ya_attempt_count:
             upload_file = self.make_upload_file_path(
-                f"{file.name}", str(number) if number else ""
+                f"{file_name}", str(number) if number else ""
             )
             try:
                 await self.client.upload(file, upload_file)
                 return True
             except PathExistsError:
                 number += 1
-                self.logger.warning(f"File {file_name} already exists")
+                self.logger.warning(f"File {upload_file} already exists")
 
         raise ValueError(f"Please rename upload file")
 

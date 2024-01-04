@@ -5,7 +5,7 @@ from pydantic import field_validator, BaseModel
 
 from pydantic_settings import BaseSettings
 
-from data_loader.base.type_hint import LOG_LEVEL
+from data_loader.base.base_helper import LOG_LEVEL
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__name__)))
 
@@ -53,7 +53,7 @@ class UvicornSettings(Base):
         return log_level.lower()
 
 
-class AppSettings(BaseModel):
+class AppSettings(Base):
     """Application settings class.
 
     Args:
@@ -85,7 +85,7 @@ class AppSettings(BaseModel):
         return f"http://{self.app_host}:{self.app_port}"  # noqa:
 
 
-class LogSettings(BaseModel):
+class LogSettings(Base):
     """Setting logging.
 
     level (str, optional): The level of logging. Defaults to "INFO".
