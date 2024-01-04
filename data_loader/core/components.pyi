@@ -6,7 +6,6 @@ from fastapi import FastAPI, Request as FastAPIRequest
 from core.settings import AppSettings
 from store.store import Store
 
-
 class Application(FastAPI):
     """The main application class.
 
@@ -24,7 +23,6 @@ class Application(FastAPI):
     settings: AppSettings
     logger: logging.Logger
     docs_url: str
-
 
 class Request(FastAPIRequest):
     """Request overrides.
