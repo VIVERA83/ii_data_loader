@@ -8,7 +8,11 @@ from store.store import setup_store
 
 
 def setup_app() -> "Application":
-    """The place where the application is built, database connections, routes, etc."""
+    """Creates and configures the main FastAPI application.
+
+       Returns:
+           Application: The main FastAPI application.
+       """
     settings = AppSettings()
     app = Application(
         docs_url=settings.docs_url,
