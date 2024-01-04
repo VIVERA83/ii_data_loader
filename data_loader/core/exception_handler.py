@@ -1,4 +1,3 @@
-import logging
 import traceback
 from logging import Logger
 
