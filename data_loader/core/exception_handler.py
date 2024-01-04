@@ -2,30 +2,27 @@ import logging
 import traceback
 from logging import Logger
 
-from base.base_helper import HTTP_EXCEPTION
+from base.base_helper import HTTP_EXCEPTION, LOG_LEVEL
 from httpcore import URL
 from starlette import status
 from starlette.responses import JSONResponse
 
 
 class ExceptionHandler:
-
-    def __init__(
-            self,
-    ):
+    def __init__(self, log_level: LOG_LEVEL = "INFO", is_traceback: bool = False):
         self.exception = Exception("Unknown error...")
+        self.level = log_level
         self.logger = Logger(__name__)
-        self.level = logging.WARNING
         self.message = "Unknown error..."
         self.status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
-        self.is_traceback = False
+        self.is_traceback = is_traceback
 
     def __call__(
-            self,
-            exception: Exception,
-            url: URL,
-            logger: Logger = None,
-            is_traceback: bool = False,
+        self,
+        exception: Exception,
+        url: URL,
+        logger: Logger = None,
+        is_traceback: bool = False,
     ) -> JSONResponse:
         self.exception = exception
         self.logger = logger
@@ -49,11 +46,11 @@ class ExceptionHandler:
         match self.level:
             case "CRITICAL" | 50:
                 msg = (
-                        f" \n_____________\n "
-                        f"WARNING: an error has occurred to which there is no correct response of the application."
-                        f" WE NEED TO RESPOND URGENTLY"
-                        f" \nExceptionHandler:  {str(self.exception)}\n"
-                        f" _____________\n" + traceback.format_exc()
+                    f" \n_____________\n "
+                    f"WARNING: an error has occurred to which there is no correct response of the application."
+                    f" WE NEED TO RESPOND URGENTLY"
+                    f" \nExceptionHandler:  {str(self.exception)}\n"
+                    f" _____________\n" + traceback.format_exc()
                 )
                 self.logger.critical(msg)
             case "ERROR" | 40:
