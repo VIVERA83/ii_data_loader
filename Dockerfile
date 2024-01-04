@@ -1,47 +1,46 @@
 FROM python:3.12.1
-WORKDIR app
+WORKDIR data_loader
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV UVICORN_WORKERS=1
 
- # Setting base application
-ENV APP_SECRET_KEY="secret-key"
+# Uvicorn settings
+ENV PORT=8004
+ENV HOST=0.0.0.0
+ENV LOG_LEVEL=INFO
+ENV WORKERS=1
+ENV RELOAD="True"
 
-# Settings for the crawler
-ENV LOGIN_URL="http://localhost"
-ENV VIEW_URL="http://localhost"
-ENV COURSES=[1001,1023]
+# Application settings
+ENV TITLE="Data Loader"
+ENV DESCRIPTION="Data download service"
+ENV VERSION="0.0.1"
+ENV DOCS_URL="/docs"
+ENV REDOC_URL="/redoc"
+ENV OPENAPI_URL="/openapi.json"
+ENV APP_HOST=${HOST}
+ENV APP_PORT=${PORT}
 
-# Settings for PostgresSQL database connections
-ENV POSTGRES_DB="test_db"
-ENV POSTGRES_USER="test_user"
-ENV POSTGRES_PASSWORD="test_password"
-ENV POSTGRES_HOST="0.0.0.0"
-ENV POSTGRES_PORT="5432"
-ENV POSTGRES_SCHEMA="labor_project"
+# Settings logging
+ENV LEVEL="INFO"
+ENV GURU="True"
+ENV TRACEBACK="false"
 
-# Settings for Redis
-ENV REDIS_DB="1"
-ENV REDIS_HOST="0.0.0.0"
-ENV REDIS_PORT="2541"
-ENV REDIS_USER="default"
-ENV REDIS_PASSWORD="test_password"
+# Excel File settings
+# 50Mb
+ENV SIZE=524288000
 
-# Settings for authorization
-ENV AUTH_KEY="auth-key"
-ENV AUTH_ALGORITHMS="HS256"
-ENV AUTH_ACCESS_EXPIRES_DELTA="360"
-ENV AUTH_REFRESH_EXPIRES_DELTA="500"
-
-# Setting Schedule
-ENV LIMIT=5
-ENV REFRESH_DELAY=4
+# Yandex disk settings
+ENV YA_TOKEN=NULL
+ENV YA_CLIENT_ID=NULL
+ENV YA_DIR="temp_folder"
+ENV YA_ATTEMPT_COUNT=2
 
 # Building
-ENV UVICORN_ARGS "core.app:app --host $APP_HOST --port $APP_PORT --workers $UVICORN_WORKERS"
+ENV UVICORN_ARGS "core.app:setup_app --host $APP_HOST --port $APP_PORT --workers $UVICORN_WORKERS"
 RUN pip install --upgrade pip  --no-cache-dir
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
-COPY app .
+COPY data_loader .
 
 CMD uvicorn $UVICORN_ARGS

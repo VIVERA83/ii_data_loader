@@ -6,13 +6,13 @@ from fastapi import APIRouter
 from core.components import Request
 from downloader.schemes import OkSchema, UploadFileSchema
 
-downloader_route = APIRouter(prefix="/downloader", tags=["TOPIC"])
+downloader_route = APIRouter(prefix="/downloader", tags=["FILE"])
 
 
 @downloader_route.post(
     "/add_data_from_file",
     summary="Add data from file",
-    description="Add PL or channel data from an `excel` file. "
+    description="Add `pl` or `can` data from an excel file. "
     "Received data is processed immediately. <br>"
     "Note: \n"
     " - Only the first sheet is processed.\n"
@@ -34,6 +34,4 @@ async def add_pl_from_file(request: "Request", file: UploadFileSchema) -> Any:
     await request.app.store.ya_disk.upload_file(
         BytesIO(await file.read()), file.filename
     )
-    return OkSchema(
-        message=f"Data successfully sent to queue for addition to the database"
-    )
+    return OkSchema()
