@@ -93,7 +93,7 @@ class LogSettings(Base):
     traceback (bool, optional): Whether to include tracebacks in logs. Defaults to True.
     """
 
-    level: str = "INFO"
+    level: LOG_LEVEL = "INFO"
     guru: bool = True
     traceback: bool = True
 
