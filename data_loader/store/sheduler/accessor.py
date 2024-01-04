@@ -4,9 +4,10 @@ from typing import Optional
 from uuid import UUID
 
 from base.base_accessor import BaseAccessor
-from core.settings import SchedulerSettings
-from store.labor_protect.models import StatusTask, TaskModel
-from store.labor_protect_crawler.schemas import UpdateData
+
+# from core.settings import SchedulerSettings
+# from store.labor_protect.models import StatusTask, TaskModel
+# from store.labor_protect_crawler.schemas import UpdateData
 
 
 class SchedulerAccessor(BaseAccessor):

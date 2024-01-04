@@ -1,7 +1,7 @@
 """A module describing services for working with data."""
 
-from store.database.postgres import Postgres
-from store.sheduler.accessor import SchedulerAccessor
+# from store.database.postgres import Postgres
+# from store.sheduler.accessor import SchedulerAccessor
 
 
 class Store:
@@ -14,7 +14,7 @@ class Store:
             app: The application
         """
 
-        self.scheduler = SchedulerAccessor(app)
+        # self.scheduler = SchedulerAccessor(app)
 
 
 def setup_store(app):
@@ -27,5 +27,5 @@ def setup_store(app):
     Args:
         app: The application
     """
-    app.postgres = Postgres(app)
+    # app.postgres = Postgres(app)
     app.store = Store(app)
