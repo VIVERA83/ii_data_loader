@@ -1,11 +1,11 @@
 """All application settings."""
 import os
 
-from pydantic import field_validator, BaseModel
+from pydantic import field_validator
 
 from pydantic_settings import BaseSettings
 
-from data_loader.base.base_helper import LOG_LEVEL
+from base.base_helper import LOG_LEVEL
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__name__)))
 

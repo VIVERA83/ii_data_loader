@@ -10,9 +10,9 @@ from store.store import setup_store
 def setup_app() -> "Application":
     """Creates and configures the main FastAPI application.
 
-       Returns:
-           Application: The main FastAPI application.
-       """
+    Returns:
+        Application: The main FastAPI application.
+    """
     settings = AppSettings()
     app = Application(
         docs_url=settings.docs_url,
