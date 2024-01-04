@@ -8,8 +8,7 @@ class BaseAccessor:
             app (FastAPI): The application
         """
         self.app = app
-        # self.logger = app.logger
-        self.logger = app.logger.getChild(self.__class__.__name__)
+        self.logger = app.logger
         app.on_event("startup")(self.connect)
         app.on_event("shutdown")(self.disconnect)
         self._init()

@@ -100,3 +100,19 @@ class LogSettings(BaseModel):
 
 class FileSettings(Base):
     size: int = 1024 * 1024 * 10
+
+
+class YaDiskSettings(Base):
+    """Yandex Disk settings class.
+
+    Args:
+        ya_token (str): Yandex OAuth2 access token.
+        ya_client_id (str): Yandex OAuth2 client ID.
+        ya_dir (str, optional): Yandex Disk directory ID. Defaults to "temp_folder".
+        ya_attempt_count (str, optional): Number of attempts to download a file. Defaults to 10.
+    """
+
+    ya_token: str
+    ya_client_id: str
+    ya_dir: str = "temp_folder"
+    ya_attempt_count: str = 10

@@ -1,7 +1,5 @@
 """A module describing services for working with data."""
-
-# from store.database.postgres import Postgres
-# from store.sheduler.accessor import SchedulerAccessor
+from store.ya_disk.accessor import YaDiskAccessor
 
 
 class Store:
@@ -13,8 +11,7 @@ class Store:
         Args:
             app: The application
         """
-
-        # self.scheduler = SchedulerAccessor(app)
+        self.ya_disk = YaDiskAccessor(app)
 
 
 def setup_store(app):
@@ -27,5 +24,6 @@ def setup_store(app):
     Args:
         app: The application
     """
-    # app.postgres = Postgres(app)
     app.store = Store(app)
+
+    # app.postgres = Postgres(app)

@@ -1,10 +1,12 @@
 from core.components import Application
 from store.sheduler.accessor import SchedulerAccessor
+from store.ya_disk.accessor import YaDiskAccessor
+
 
 class Store:
     """Store, data service and working with it."""
 
-    scheduler = SchedulerAccessor
+    ya_disk: YaDiskAccessor
 
     def __init__(self, app: Application):
         """
@@ -13,13 +15,7 @@ class Store:
         Args:
             app (Application): The main application component.
         """
-        ...
+
 
 def setup_store(app: Application):
-    """
-    Set up the store.
-
-    Args:
-        app (Application): The main application component.
-    """
-    ...
+    app.store = Store(app)
