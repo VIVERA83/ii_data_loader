@@ -24,6 +24,17 @@ class ExceptionHandler:
         logger: Logger = None,
         is_traceback: bool = False,
     ) -> JSONResponse:
+        """This method is used to handle an exception.
+
+        Args:
+            exception (Exception): The exception that was raised.
+            url (URL): The URL of the request that caused the exception.
+            logger (Logger, optional): The logger to use. Defaults to None.
+            is_traceback (bool, optional): Whether or not to include a traceback in the response. Defaults to False.
+
+        Returns:
+            JSONResponse: A JSON response containing the error details.
+        """
         self.exception = exception
         self.logger = logger
         self.is_traceback = is_traceback
@@ -31,9 +42,13 @@ class ExceptionHandler:
         return self.error_response(url)
 
     def error_response(self, url: URL) -> JSONResponse:
-        """Формирует и возвращает JSONResponse объект с ответом.
+        """This method is used to create an error response.
 
-        Так же выдает лог сообщение об ошибке.
+        Args:
+            url (URL): The URL of the request that caused the exception.
+
+        Returns:
+            JSONResponse: A JSON response containing the error details.
         """
         content_data = {
             "detail": HTTP_EXCEPTION.get(self.status_code),
@@ -62,15 +77,13 @@ class ExceptionHandler:
         return JSONResponse(content=content_data, status_code=self.status_code)
 
     def handler_exception(self):
-        """Обработчик исключений которые произошли в приложении.
+        """This method is used to handle the exception.
 
-        Выводится сообщение в лог, о том что нужно срочно решить проблему.
+        It sets the status code, message, and level based on the exception.
         """
         if self.exception.args:
             self.message = self.exception.args[0]
         self.status_code = status.HTTP_400_BAD_REQUEST
-        self.level = logging.WARNING
         message = self.exception.__class__.__name__
         if ex := getattr(self.exception, "exception", False):
             message += f" real exception={ex.args}"
-        self.logger.warning(message)
