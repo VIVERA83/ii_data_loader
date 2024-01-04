@@ -2,8 +2,6 @@ import logging
 import traceback
 from logging import Logger
 
-from icecream import ic
-
 from base.base_helper import HTTP_EXCEPTION
 from httpcore import URL
 from starlette import status
@@ -11,10 +9,9 @@ from starlette.responses import JSONResponse
 
 
 class ExceptionHandler:
-    handlers = {}
 
     def __init__(
-        self,
+            self,
     ):
         self.exception = Exception("Unknown error...")
         self.logger = Logger(__name__)
@@ -24,11 +21,11 @@ class ExceptionHandler:
         self.is_traceback = False
 
     def __call__(
-        self,
-        exception: Exception,
-        url: URL,
-        logger: Logger = None,
-        is_traceback: bool = False,
+            self,
+            exception: Exception,
+            url: URL,
+            logger: Logger = None,
+            is_traceback: bool = False,
     ) -> JSONResponse:
         self.exception = exception
         self.logger = logger
@@ -52,11 +49,11 @@ class ExceptionHandler:
         match self.level:
             case "CRITICAL" | 50:
                 msg = (
-                    f" \n_____________\n "
-                    f"WARNING: an error has occurred to which there is no correct response of the application."
-                    f" WE NEED TO RESPOND URGENTLY"
-                    f" \nExceptionHandler:  {str(self.exception)}\n"
-                    f" _____________\n" + traceback.format_exc()
+                        f" \n_____________\n "
+                        f"WARNING: an error has occurred to which there is no correct response of the application."
+                        f" WE NEED TO RESPOND URGENTLY"
+                        f" \nExceptionHandler:  {str(self.exception)}\n"
+                        f" _____________\n" + traceback.format_exc()
                 )
                 self.logger.critical(msg)
             case "ERROR" | 40:
