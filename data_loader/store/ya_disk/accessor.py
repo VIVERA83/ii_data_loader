@@ -1,13 +1,18 @@
+from io import BytesIO
+from typing import Optional
+
+from yadisk.exceptions import PathExistsError
+
 from base.base_accessor import BaseAccessor
 from core.settings import YaDiskSettings
-from yadisk import AsyncClient as YaDiskAsyncClient
+from yadisk import AsyncClient
 
 from store.ya_disk.exception import YaTokenNotValidException
 
 
 class YaDiskAccessor(BaseAccessor):
     settings: YaDiskSettings
-    client: YaDiskAsyncClient
+    client: AsyncClient
 
     def _check_token(func):  # noqa:
         """A decorator that verifies the Yandex disk token before executing the decorated function.
@@ -47,7 +52,7 @@ class YaDiskAccessor(BaseAccessor):
             None: Returns nothing.
         """
         self.settings = YaDiskSettings()
-        self.client = YaDiskAsyncClient(
+        self.client = AsyncClient(
             self.settings.ya_client_id, token=self.settings.ya_token
         )
         await self.__setup()
@@ -75,7 +80,50 @@ class YaDiskAccessor(BaseAccessor):
         Returns:
             None: Returns nothing.
         """
-        # disk_info = await self.client.get_disk_info()
-
         if not await self.client.is_dir(self.settings.ya_dir):
             await self.client.mkdir(self.settings.ya_dir)
+
+    @_check_token  # noqa:
+    async def upload_file(
+        self, file: BytesIO | bytes, file_name: str
+    ) -> Optional[bool]:
+        """Uploads a file to Yandex Disk.
+
+        Args:
+            file (BytesIO | bytes): The file to be uploaded.
+            file_name (str): The name of the file.
+
+        Returns:
+            Optional[bool]: Returns True if the file was uploaded successfully, raises an exception otherwise.
+
+        Raises:
+            ValueError: If the file could not be uploaded after a certain number of attempts.
+        """
+        number = 0
+        while number < self.settings.ya_attempt_count:
+            upload_file = self.make_upload_file_path(
+                f"{file.name}", str(number) if number else ""
+            )
+            try:
+                await self.client.upload(file, upload_file)
+                return True
+            except PathExistsError:
+                number += 1
+                self.logger.warning(f"File {file_name} already exists")
+
+        raise ValueError(f"Please rename upload file")
+
+    def make_upload_file_path(self, upload_file_name: str, number: str = "") -> str:
+        """Creates a unique path for the uploaded file on Yandex Disk.
+
+        Args:
+            upload_file_name (str): The name of the file to be uploaded.
+            number (str, optional): A number to be appended to the file name to make it unique. Defaults to "".
+
+        Returns:
+            str: The unique path for the uploaded file on Yandex Disk.
+        """
+        name, *suf = upload_file_name.split(".")
+        name += f"({number})" if number else ""
+        name += f".{'.'.join(suf)}" if suf else ""
+        return "/".join([self.settings.ya_dir, name])
