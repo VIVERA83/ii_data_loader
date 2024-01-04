@@ -7,7 +7,7 @@ The service for uploading data from an excel file to the database of the "engine
 ```bash
 docker build -t my_app .
 ```
-Запуск приложения
-```bash
-docker run --name APP -p 8005:8004 my_app
+Запуск приложения, Пример замените значения `token` и `client_id`
+```
+docker run --name APP -p 8005:8005 -e YA_TOKEN="token" -e YA_CLIENT_ID="client_id" my_app
 ```
