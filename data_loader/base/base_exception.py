@@ -19,8 +19,10 @@ class ExceptionBase(Exception):
             args (str): The error message.
             exception (Exception): The original exception that caused this exception to be raised.
         """
-        self.args = args
-        self.exception = exception
+        if args:
+            self.args = args
+        if exception:
+            self.exception = exception
 
     def __str__(self):
         """
@@ -29,4 +31,4 @@ class ExceptionBase(Exception):
         Returns:
             str: The error message.
         """
-        return f"Error: {self.args[0]}"
+        return f"{self.args[0]}"
