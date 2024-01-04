@@ -1,5 +1,5 @@
 from core.components import Application
-from downloader_file.views import downloader_file_route
+from downloader.views import downloader_file_route
 
 
 def setup_routes(app: Application):

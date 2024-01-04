@@ -5,7 +5,7 @@ from fastapi import APIRouter
 from icecream import ic
 
 from core.components import Request
-from downloader_file.schemes import OkSchema, UploadFileSchema
+from downloader.schemes import OkSchema, UploadFileSchema
 
 downloader_file_route = APIRouter(prefix="/downloader", tags=["TOPIC"])
 
