@@ -5,7 +5,7 @@ from base.base_accessor import BaseAccessor
 from core.settings import YaDiskSettings
 from store.ya_disk.exception import YaTokenNotValidException
 from yadisk import AsyncClient
-from yadisk.exceptions import PathExistsError
+from yadisk.exceptions import PathExistsError, ResourceIsLockedError
 
 
 class YaDiskAccessor(BaseAccessor):
@@ -108,6 +108,10 @@ class YaDiskAccessor(BaseAccessor):
             except PathExistsError:
                 number += 1
                 self.logger.warning(f"File {upload_file} already exists")
+            except ResourceIsLockedError:
+                number += 1
+                self.logger.warning(f"File {upload_file} is locked")
+                continue
 
         raise ValueError(f"Please rename upload file")
 
