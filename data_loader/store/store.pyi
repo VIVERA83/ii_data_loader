@@ -1,5 +1,4 @@
 from core.components import Application
-from store.sheduler.accessor import SchedulerAccessor
 from store.ya_disk.accessor import YaDiskAccessor
 
 class Store:

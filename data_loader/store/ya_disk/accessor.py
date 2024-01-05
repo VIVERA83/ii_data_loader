@@ -1,13 +1,11 @@
 from io import BytesIO
 from typing import Optional
 
-from yadisk.exceptions import PathExistsError
-
 from base.base_accessor import BaseAccessor
 from core.settings import YaDiskSettings
-from yadisk import AsyncClient
-
 from store.ya_disk.exception import YaTokenNotValidException
+from yadisk import AsyncClient
+from yadisk.exceptions import PathExistsError
 
 
 class YaDiskAccessor(BaseAccessor):

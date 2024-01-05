@@ -25,5 +25,3 @@ def setup_store(app):
         app: The application
     """
     app.store = Store(app)
-
-    # app.postgres = Postgres(app)

@@ -1,8 +1,8 @@
 import logging
 
-from fastapi import FastAPI, Request as FastAPIRequest
-
 from core.settings import AppSettings
+from fastapi import FastAPI
+from fastapi import Request as FastAPIRequest
 from store.store import Store
 
 
@@ -23,10 +23,6 @@ class Application(FastAPI):
     settings: AppSettings
     logger: logging.Logger
     docs_url: str
-
-    # redis: RedisAccessor
-    # postgres: Postgres
-    # public_access: Public_access
 
 
 class Request(FastAPIRequest):
