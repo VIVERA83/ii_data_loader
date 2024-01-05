@@ -1,16 +1,15 @@
 import re
 
+from core.components import Application
+from core.exception_handler import ExceptionHandler
+from core.settings import LogSettings
+from fastapi import Request as FastApiRequest
+from fastapi import Response, status
 from fastapi.encoders import jsonable_encoder
-from fastapi.exceptions import RequestValidationError, HTTPException
+from fastapi.exceptions import HTTPException, RequestValidationError
+from fastapi.responses import JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.types import ASGIApp
-
-from core.components import Application
-from fastapi import Request as FastApiRequest, Response, status
-from fastapi.responses import JSONResponse
-from core.exception_handler import ExceptionHandler
-
-from core.settings import LogSettings
 
 
 class ErrorHandlingMiddleware(BaseHTTPMiddleware):

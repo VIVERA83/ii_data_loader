@@ -1,10 +1,9 @@
 from io import BytesIO
 from typing import Any
 
-from fastapi import APIRouter
-
 from core.components import Request
 from downloader.schemes import OkSchema, UploadFileSchema
+from fastapi import APIRouter
 
 downloader_route = APIRouter(prefix="/downloader", tags=["FILE"])
 

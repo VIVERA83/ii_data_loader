@@ -1,14 +1,13 @@
-from typing import Type, Any, Callable
+from typing import Any, Callable, Type
+
+import filetype
+from core.settings import FileSettings
 from fastapi import File
-from pydantic import GetJsonSchemaHandler, BaseModel
+from pydantic import BaseModel, GetJsonSchemaHandler
 from pydantic.json_schema import JsonSchemaValue
 from pydantic_core import CoreSchema
 from pydantic_core.core_schema import with_info_plain_validator_function
-
 from starlette.datastructures import UploadFile
-import filetype
-
-from core.settings import FileSettings
 
 
 class UploadFileSchema(UploadFile):

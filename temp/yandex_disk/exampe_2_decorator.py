@@ -3,10 +3,9 @@ import os
 
 import aiofiles
 import yadisk
+from core.settings import BASE_DIR
 from icecream import ic
 from yadisk.exceptions import PathExistsError
-
-from core.settings import BASE_DIR
 
 ya_token = "y0_AgAAAAABo1wMAAsTvgAAAAD3AGxAgdTeBafNQVmF-8JM3lycdXRhpE8"
 ya_client_id = "af20c4eb971f409eab78fd72cc6274b6"

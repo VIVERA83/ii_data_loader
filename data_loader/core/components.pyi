@@ -1,9 +1,8 @@
 import logging
-from typing import Optional
-
-from fastapi import FastAPI, Request as FastAPIRequest
 
 from core.settings import AppSettings
+from fastapi import FastAPI
+from fastapi import Request as FastAPIRequest
 from store.store import Store
 
 class Application(FastAPI):
