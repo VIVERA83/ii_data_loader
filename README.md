@@ -5,9 +5,9 @@ The service for uploading data from an excel file to the database of the "engine
 
 Монтировать образ
 ```bash
-docker build -t my_app .
+docker build -t ii_data_loader .
 ```
 Запуск приложения, Пример замените значения `token` и `client_id`
 ```
-docker run --name APP -p 8005:8005 -e YA_TOKEN="token" -e YA_CLIENT_ID="client_id" my_app
+docker run --name data_loader -p 8006:8006 -e YA_TOKEN="token" -e YA_CLIENT_ID="client_id" ii_data_loader
 ```
