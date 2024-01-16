@@ -106,12 +106,10 @@ class YaDiskAccessor(BaseAccessor):
                 await self.client.upload(file, upload_file)
                 return True
             except PathExistsError:
-                number += 1
                 self.logger.warning(f"File {upload_file} already exists")
             except ResourceIsLockedError:
-                number += 1
                 self.logger.warning(f"File {upload_file} is locked")
-                continue
+            number += 1
 
         raise ValueError(f"Please rename upload file")
 
