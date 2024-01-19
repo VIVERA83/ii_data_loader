@@ -1,4 +1,6 @@
 # Byte-compiled / optimized / DLL files
+data_loader/bot.session
+data_loader/bot.session-journal
 .idea/
 __pycache__/
 *.py[cod]
