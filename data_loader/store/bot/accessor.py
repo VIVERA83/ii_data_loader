@@ -89,5 +89,5 @@ class TgBotAccessor(BaseAccessor):
                 )
             await event.reply(message)
             self.logger.info(
-                f"{message}: filename{event.file.name}, size : {event.file.size / 1024 / 1024} Mb"
+                f"{message}: filename{event.file.name}, size : {event.file.size / 1024 / 1024:.2} Mb"
             )

@@ -51,7 +51,7 @@ class YaDiskAccessor(BaseAccessor):
         """
         self.settings = YaDiskSettings()
         self.client = AsyncClient(
-            self.settings.ya_client_id, token=self.settings.ya_token
+            self.settings.ya_client_id, token=self.settings.ya_token, session="aiohttp"
         )
         await self.__setup()
         self.logger.info("Yandex disk client connected")
@@ -83,7 +83,7 @@ class YaDiskAccessor(BaseAccessor):
 
     @_check_token  # noqa:
     async def upload_file(
-        self, file: BytesIO | bytes, file_name: str
+            self, file: BytesIO | bytes, file_name: str
     ) -> Optional[bool]:
         """Uploads a file to Yandex Disk.
 
@@ -128,7 +128,7 @@ class YaDiskAccessor(BaseAccessor):
         return "/".join([self.settings.ya_dir, name])
 
     async def download_to_cloud(
-        self, file_name: str, iter_download: Callable[[], AsyncIterator[bytes]]
+            self, file_name: str, iter_download: Callable[[], AsyncIterator[bytes]]
     ):
         """Downloads a file to Yandex Disk.
 

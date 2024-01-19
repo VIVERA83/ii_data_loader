@@ -5,7 +5,6 @@ class Store:
     """Store, data service and working with it."""
 
     ya_disk: YaDiskAccessor
-
     def __init__(self, app: Application):
         """
         Initialize the store.
