@@ -1,5 +1,5 @@
 from io import BytesIO
-from typing import Optional
+from typing import Optional, Callable, AsyncIterator
 
 from base.base_accessor import BaseAccessor
 from core.settings import YaDiskSettings
@@ -99,23 +99,20 @@ class YaDiskAccessor(BaseAccessor):
         """
         number = 0
         while number < self.settings.ya_attempt_count:
-            upload_file = self.make_upload_file_path(
+            upload_file = self.make_file_path(
                 f"{file_name}", str(number) if number else ""
             )
             try:
                 await self.client.upload(file, upload_file)
                 return True
             except PathExistsError:
-                number += 1
                 self.logger.warning(f"File {upload_file} already exists")
             except ResourceIsLockedError:
-                number += 1
                 self.logger.warning(f"File {upload_file} is locked")
-                continue
-
+            number += 1
         raise ValueError(f"Please rename upload file")
 
-    def make_upload_file_path(self, upload_file_name: str, number: str = "") -> str:
+    def make_file_path(self, upload_file_name: str, number: str = "") -> str:
         """Creates a unique path for the uploaded file on Yandex Disk.
 
         Args:
@@ -129,3 +126,26 @@ class YaDiskAccessor(BaseAccessor):
         name += f"({number})" if number else ""
         name += f".{'.'.join(suf)}" if suf else ""
         return "/".join([self.settings.ya_dir, name])
+
+    async def download_to_cloud(
+        self, file_name: str, iter_download: Callable[[], AsyncIterator[bytes]]
+    ):
+        """Downloads a file to Yandex Disk.
+
+        Parameters:
+            file_name (str): The name of the file to download.
+            iter_download (Callable[[], AsyncIterator[bytes]]): A function that returns an asynchronous iterator
+            of bytes that represents the contents of the file to download.
+
+        Returns:
+            Any: The result of the Yandex Disk upload operation.
+        """
+        number = 0
+        while True:
+            path = self.make_file_path(file_name, str(number) if number else None)
+            try:
+                url = await self.client.get_upload_link(path)
+                return await self.client.upload_by_link(iter_download, url)
+            except PathExistsError:
+                pass
+            number += 1

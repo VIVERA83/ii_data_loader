@@ -114,3 +114,9 @@ class YaDiskSettings(Base):
     ya_client_id: str
     ya_dir: str = "temp_folder"
     ya_attempt_count: int = 10
+
+
+class TgSettings(Base):
+    tg_api_id: int
+    tg_api_hash: str
+    tg_bot_token: str
