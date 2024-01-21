@@ -41,7 +41,7 @@ class TgBotAccessor(BaseAccessor):
         self.bot.on(NewMessage())(self.event_handler)
 
     def make_async_iterator(
-            self, document: InputDocumentFileLocation
+        self, document: InputDocumentFileLocation
     ) -> Callable[[], AsyncIterator[bytes]]:
         """Creates an asynchronous iterator that can be used to download a file from Telegram's cloud storage.
 
@@ -56,7 +56,7 @@ class TgBotAccessor(BaseAccessor):
 
         async def iter_download():
             async for chunk in self.bot.iter_download(
-                    document, chunk_size=1024 * 1024 * 1
+                document, chunk_size=1024 * 1024 * 1
             ):
                 yield chunk
 
@@ -71,7 +71,11 @@ class TgBotAccessor(BaseAccessor):
     async def document_loader(self, event) -> str:
         message = "Invalid file format, expected an excel file."
         if event.document.mime_type == MIME_TYPE:
-            await self.app.store.ya_disk.download_to_cloud(event.file.name, self.make_async_iterator(event.document))
+            await self.app.store.ya_disk.download_to_cloud(
+                event.file.name, self.make_async_iterator(event.document)
+            )
             message = "Document successfully added to the queue for database insertion."
-        self.logger.info(f"{message}: filename{event.file.name}, size : {event.file.size / 1024 / 1024:.2} Mb")
+        self.logger.info(
+            f"{message}: filename{event.file.name}, size : {event.file.size / 1024 / 1024:.2} Mb"
+        )
         return message
