@@ -2,7 +2,7 @@ from typing import Callable, AsyncIterator
 
 from telethon import TelegramClient
 from telethon.events import NewMessage
-from telethon.tl.types import InputDocumentFileLocation
+from telethon.tl.types import InputDocumentFileLocation, Document
 
 from base.base_accessor import BaseAccessor
 from core.settings import TgSettings
@@ -38,10 +38,10 @@ class TgBotAccessor(BaseAccessor):
         self.logger.info("Telegram bot disconnected")
 
     async def setup_handler(self):
-        self.bot.on(NewMessage())(self.document_loader)
+        self.bot.on(NewMessage())(self.event_handler)
 
     def make_async_iterator(
-        self, document: InputDocumentFileLocation
+            self, document: InputDocumentFileLocation
     ) -> Callable[[], AsyncIterator[bytes]]:
         """Creates an asynchronous iterator that can be used to download a file from Telegram's cloud storage.
 
@@ -56,38 +56,22 @@ class TgBotAccessor(BaseAccessor):
 
         async def iter_download():
             async for chunk in self.bot.iter_download(
-                document, chunk_size=1024 * 1024 * 1
+                    document, chunk_size=1024 * 1024 * 1
             ):
                 yield chunk
 
         return iter_download
 
-    async def document_loader(self, event):
-        if document := event.document:
-            """
-            Checks if the incoming event contains a document
-            :param event: the incoming event
-            :type event: NewMessage
-            :return: True if the event contains a document, False otherwise
-            :rtype: bool
-            """
-            message = "Invalid file format, expected an excel file."
-            if document.mime_type == MIME_TYPE:
-                """
-                Downloads the document to the cloud and saves it to the specified file name
-                :param file_name: the name of the file to save the document as
-                :type file_name: str
-                :param document: the incoming document
-                :type document: Document
-                :return: None
-                """
-                await self.app.store.ya_disk.download_to_cloud(
-                    event.file.name, self.make_async_iterator(document)
-                )
-                message = (
-                    "Document successfully added to the queue for database insertion."
-                )
-            await event.reply(message)
-            self.logger.info(
-                f"{message}: filename{event.file.name}, size : {event.file.size / 1024 / 1024:.2} Mb"
-            )
+    async def event_handler(self, event):
+        message = "Unknown command or document."
+        if event.document:
+            message = await self.document_loader(event)
+        await event.reply(message)
+
+    async def document_loader(self, event) -> str:
+        message = "Invalid file format, expected an excel file."
+        if event.document.mime_type == MIME_TYPE:
+            await self.app.store.ya_disk.download_to_cloud(event.file.name, self.make_async_iterator(event.document))
+            message = "Document successfully added to the queue for database insertion."
+        self.logger.info(f"{message}: filename{event.file.name}, size : {event.file.size / 1024 / 1024:.2} Mb")
+        return message
