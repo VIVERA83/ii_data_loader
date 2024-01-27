@@ -2,7 +2,7 @@ from typing import Callable, AsyncIterator
 
 from telethon import TelegramClient
 from telethon.events import NewMessage
-from telethon.tl.types import InputDocumentFileLocation, Document
+from telethon.tl.types import InputDocumentFileLocation
 
 from base.base_accessor import BaseAccessor
 from core.settings import TgSettings
