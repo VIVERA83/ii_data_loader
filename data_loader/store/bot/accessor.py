@@ -78,9 +78,9 @@ class TgBotAccessor(BaseAccessor):
             message = await self.__document_loader(event)
         elif re.fullmatch(f"hello {PATTERN} {PATTERN}", event.raw_text):
             start_date, end_date = event.raw_text.split()[1:]
-            file = await fetch_report_by_date(start_date, end_date, )
-            file.name = "hello.xlsx"
-            message = "Cats is here 😺"
+            file = await fetch_report_by_date(start_date, end_date)
+            file.name = f"report_from {start_date}_to_{end_date}.xlsx"
+            message = f"Report from {start_date} to {end_date} ready."
         elif event.raw_text == "clear":
             message = (await clear_database()).get("message")
         await event.reply(message, file=file)
