@@ -11,3 +11,7 @@ docker build -t ii_data_loader .
 ```
 docker run --name data_loader -p 8006:8006 -e YA_TOKEN="token" -e YA_CLIENT_ID="client_id" ii_data_loader
 ```
+
+```bash
+  docker build  -t data_loader .
+```
