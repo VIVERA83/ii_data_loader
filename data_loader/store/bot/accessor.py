@@ -50,7 +50,7 @@ class TgBotAccessor(BaseAccessor):
         self.bot.on(NewMessage())(self.event_handler)
 
     def make_async_iterator(
-            self, document: InputDocumentFileLocation
+        self, document: InputDocumentFileLocation
     ) -> Callable[[], AsyncIterator[bytes]]:
         """Creates an asynchronous iterator that can be used to download a file from Telegram's cloud storage.
 
@@ -65,7 +65,7 @@ class TgBotAccessor(BaseAccessor):
 
         async def iter_download():
             async for chunk in self.bot.iter_download(
-                    document, chunk_size=1024 * 1024 * 1
+                document, chunk_size=1024 * 1024 * 1
             ):
                 yield chunk
 

@@ -5,7 +5,9 @@ from urllib.parse import urljoin
 
 from core.settings import ServiceSettings
 
-ANALYSIS_REPORT_URL = "/analysis/report/?start_date={start_date}&end_date={end_date}&kip_empty=true"
+ANALYSIS_REPORT_URL = (
+    "/analysis/report/?start_date={start_date}&end_date={end_date}&kip_empty=true"
+)
 CLEAR_DATABASE_URL = "/analysis/clear_db/"
 BASE_URL = ServiceSettings().base_url
 
@@ -21,7 +23,9 @@ async def make_request(url: str) -> bytes:
 
 
 async def fetch_report_by_date(start_date: str, end_date: str) -> BytesIO:
-    url = await create_request_url(ANALYSIS_REPORT_URL, start_date=start_date, end_date=end_date)
+    url = await create_request_url(
+        ANALYSIS_REPORT_URL, start_date=start_date, end_date=end_date
+    )
     response = await make_request(url)
     return BytesIO(response)
 

@@ -24,3 +24,5 @@ docker run --name data_loader -p 8006:8006 -e YA_TOKEN="token" -e YA_CLIENT_ID="
 ```bash
   docker build -t vivera83/ii_data_loader:2 .
 ```
+
+https://yandex.ru/dev/disk/doc/ru/concepts/quickstart#quickstart__oauth

@@ -34,35 +34,45 @@
 import psycopg2
 
 # Establish the connection to the database
-conn = psycopg2.connect(database="YOUR_DB", user="YOUR_USER", password="YOUR_PASSWORD", host="YOUR_HOST",
-                        port="YOUR_PORT")
+conn = psycopg2.connect(
+    database="YOUR_DB",
+    user="YOUR_USER",
+    password="YOUR_PASSWORD",
+    host="YOUR_HOST",
+    port="YOUR_PORT",
+)
 
 cur = conn.cursor()
 
 # Query 1
-cur.execute("""
+cur.execute(
+    """
     SELECT p.driver_1, p.car_number , p.start_time, p.stop_time, array_agg(ce.event_date), count(coalesce (ce.event_date, null))  
     FROM ii.pls p 
     INNER JOIN ii.can_events ce ON p.car_number = ce.car_number AND ce.event_date  BETWEEN p.start_time AND cast (coalesce(stop_time, '2024-01-22') AS timestamp)
     WHERE ce.event_date BETWEEN cast('2024-01-15' AS timestamp) AND cast('2024-01-22' AS timestamp)
     AND NOT ( p.author_document <> p.author_document_change AND p.stop_time IS NULL)
     GROUP BY p.driver_1 , p.car_number , p.start_time , p.stop_time;
-    """)
+    """
+)
 results1 = cur.fetchall()
 
 # Query 2
-cur.execute("""
+cur.execute(
+    """
     SELECT p.driver_1, array_agg(distinct p.car_number), array_agg(ce.event_date), count(coalesce (ce.event_date, null))  
     FROM ii.pls p 
     INNER JOIN ii.can_events ce ON p.car_number = ce.car_number AND ce.event_date  BETWEEN p.start_time AND cast (coalesce(stop_time, '2024-01-22') AS timestamp)
     WHERE ce.event_date BETWEEN cast('2024-01-15' AS timestamp) AND cast('2024-01-22' AS timestamp)
     AND NOT ( p.author_document <> p.author_document_change AND p.stop_time IS NULL)
     GROUP BY p.driver_1;    
-    """)
+    """
+)
 results2 = cur.fetchall()
 
 # Query 3
-cur.execute("""
+cur.execute(
+    """
     SELECT p.driver_1, array_agg(distinct p.car_number), array_agg(ce.event_date), count(coalesce (ce.event_date, null)), 
     SUM(cast (coalesce(p.stop_time, '2024-01-22') AS timestamp)- p.start_time), p.start_time, p.stop_time 
     FROM ii.pls p 
@@ -70,7 +80,8 @@ cur.execute("""
     WHERE ce.event_date BETWEEN cast('2024-01-15' AS timestamp) AND cast('2024-01-22' AS timestamp)
     AND NOT ( p.author_document <> p.author_document_change AND p.stop_time IS NULL)
     GROUP BY p.driver_1, p.start_time, p.stop_time;
-    """)
+    """
+)
 results3 = cur.fetchall()
 
 cur.close()
