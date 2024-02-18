@@ -36,6 +36,11 @@ ENV YA_CLIENT_ID=NULL
 ENV YA_DIR="temp_folder"
 ENV YA_ATTEMPT_COUNT=2
 
+# Telegram application settings
+ENV TG_API_ID=NULL
+ENV TG_API_HASH=NULL
+ENV TG_BOT_TOKEN=NULL
+
 # Building
 ENV UVICORN_ARGS "core.app:setup_app --host $APP_HOST --port $APP_PORT --workers $UVICORN_WORKERS"
 RUN pip install --upgrade pip  --no-cache-dir

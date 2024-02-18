@@ -1,4 +1,7 @@
 # Byte-compiled / optimized / DLL files
+.env_data_loader
+data_loader/bot.session
+data_loader/bot.session-journal
 .idea/
 __pycache__/
 *.py[cod]
@@ -121,7 +124,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+.env_data_loader
 .venv
 env/
 venv/

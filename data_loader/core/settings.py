@@ -16,7 +16,7 @@ class Base(BaseSettings):
         """
 
         env_nested_delimiter = "__"
-        env_file = os.path.join(BASE_DIR, ".env")
+        env_file = os.path.join(BASE_DIR, ".env_data_loader")
         enf_file_encoding = "utf-8"
         extra = "ignore"
 
@@ -70,8 +70,8 @@ class AppSettings(Base):
     redoc_url: str = "/redoc"
     openapi_url: str = "/openapi.json"
 
-    app_host: str = "localhost"
-    app_port: int = 8004
+    app_host: str
+    app_port: int
 
     @property
     def base_url(self) -> str:
@@ -114,3 +114,13 @@ class YaDiskSettings(Base):
     ya_client_id: str
     ya_dir: str = "temp_folder"
     ya_attempt_count: int = 10
+
+
+class TgSettings(Base):
+    tg_api_id: int
+    tg_api_hash: str
+    tg_bot_token: str
+
+
+class ServiceSettings(Base):
+    base_url: str
