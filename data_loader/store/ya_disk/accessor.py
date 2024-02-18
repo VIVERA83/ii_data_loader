@@ -110,6 +110,7 @@ class YaDiskAccessor(BaseAccessor):
             except ResourceIsLockedError:
                 self.logger.warning(f"File {upload_file} is locked")
             number += 1
+
         raise ValueError(f"Please rename upload file")
 
     def make_file_path(self, upload_file_name: str, number: str = "") -> str:
