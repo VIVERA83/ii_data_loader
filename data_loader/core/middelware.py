@@ -83,7 +83,7 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
             detail.format(
                 message=message,
                 host=request.app.settings.app_server_host,
-                port=request.app.settings.app_port,
+                port=request.app.settings.app_port_dl,
                 uri=request.app.docs_url,
             ),
         )
