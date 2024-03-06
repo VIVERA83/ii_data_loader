@@ -2,7 +2,7 @@
 import os
 
 from base.base_helper import LOG_LEVEL
-from pydantic import field_validator
+from pydantic import field_validator, AnyUrl
 from pydantic_settings import BaseSettings
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__name__)))
@@ -124,3 +124,4 @@ class TgSettings(Base):
 
 class ServiceSettings(Base):
     base_url: str
+    clicker_base_url: str = "http://0.0.0.0:8010"

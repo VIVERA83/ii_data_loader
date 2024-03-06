@@ -3,6 +3,8 @@ from io import BytesIO
 from aiohttp import ClientSession
 from urllib.parse import urljoin
 
+from icecream import ic
+
 from core.settings import ServiceSettings
 
 ANALYSIS_REPORT_URL = (
@@ -33,4 +35,5 @@ async def fetch_report_by_date(start_date: str, end_date: str) -> BytesIO:
 async def clear_database():
     url = await create_request_url(CLEAR_DATABASE_URL)
     response = await make_request(url)
+    ic(response)
     return response

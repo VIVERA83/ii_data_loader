@@ -1,12 +1,14 @@
 import re
 from typing import Callable, AsyncIterator
-
+import json
+from icecream import ic
 from telethon import TelegramClient
 from telethon.events import NewMessage
 from telethon.tl.types import InputDocumentFileLocation
 
 from base.base_accessor import BaseAccessor
 from core.settings import TgSettings
+from store.cliker_service.click import test_request
 from store.report_service.accessor import fetch_report_by_date, clear_database
 
 MIME_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -76,13 +78,18 @@ class TgBotAccessor(BaseAccessor):
         file = None
         if event.document:
             message = await self.__document_loader(event)
+
         elif re.fullmatch(f"hello {PATTERN} {PATTERN}", event.raw_text):
             start_date, end_date = event.raw_text.split()[1:]
             file = await fetch_report_by_date(start_date, end_date)
             file.name = f"report_from {start_date}_to_{end_date}.xlsx"
             message = f"Report from {start_date} to {end_date} ready."
+
         elif event.raw_text == "clear":
-            message = (await clear_database()).get("message")
+            data = await clear_database()
+            message = ic(json.loads(data).get("status"))
+        elif event.raw_text == "test":
+            message = f"{await test_request(event.raw_text)}"
         await event.reply(message, file=file)
 
     async def __document_loader(self, event) -> str:
