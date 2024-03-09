@@ -1,4 +1,5 @@
 """A module describing services for working with data."""
+
 from store.bot.accessor import TgBotAccessor
 from store.ya_disk.accessor import YaDiskAccessor
 

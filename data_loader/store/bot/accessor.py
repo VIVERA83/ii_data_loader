@@ -1,13 +1,17 @@
 import re
 from typing import Callable, AsyncIterator
 import json
-from icecream import ic
-from telethon import TelegramClient
+from telethon import TelegramClient, functions
 from telethon.events import NewMessage
-from telethon.tl.types import InputDocumentFileLocation
+from telethon.tl.types import (
+    InputDocumentFileLocation,
+    BotCommand,
+    BotCommandScopeDefault,
+)
 
 from base.base_accessor import BaseAccessor
 from core.settings import TgSettings
+from store.bot.bot_commands import bot_commands
 from store.cliker_service.click import test_request
 from store.report_service.accessor import fetch_report_by_date, clear_database
 
@@ -34,6 +38,7 @@ class TgBotAccessor(BaseAccessor):
         self.bot = await self._client.start(  # noqa
             bot_token=self.settings.tg_bot_token
         )
+        await self.set_bot_commands()
         await self.setup_handler()
         self.logger.info("Telegram Bot connected")
 
@@ -87,7 +92,7 @@ class TgBotAccessor(BaseAccessor):
 
         elif event.raw_text == "clear":
             data = await clear_database()
-            message = ic(json.loads(data).get("status"))
+            message = json.loads(data).get("status")
         elif event.raw_text == "test":
             message = f"{await test_request(event.raw_text)}"
         await event.reply(message, file=file)
@@ -103,3 +108,27 @@ class TgBotAccessor(BaseAccessor):
             f"{message}: filename{event.file.name}, size : {event.file.size / 1024 / 1024:.2} Mb"
         )
         return message
+
+    async def set_bot_commands(self):
+        """Sets the bot's commands in the Telegram server.
+
+        Args:
+            self (TgBot): The TgBot instance.
+
+        Returns:
+            None: Returns nothing.
+        """
+
+        [
+            await self._client(
+                functions.bots.SetBotCommandsRequest(
+                    scope=BotCommandScopeDefault(),
+                    lang_code=lang_code,
+                    commands=[
+                        BotCommand(command=command, description=description)
+                        for command, description in bot_commands
+                    ],
+                )
+            )
+            for lang_code in ["ru", "en"]
+        ]

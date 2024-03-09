@@ -1,15 +1,13 @@
 from aiohttp import ClientSession
 from urllib.parse import urljoin
 
-from icecream import ic
-
 from core.settings import ServiceSettings
 
 BASE_URL = ServiceSettings().clicker_base_url
 
 
 async def create_request_url(relative_url: str, **parameters):
-    url = urljoin(BASE_URL, relative_url.format(**parameters) )
+    url = urljoin(BASE_URL, relative_url.format(**parameters))
     return url
 
 

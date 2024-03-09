@@ -1,4 +1,5 @@
 """All application settings."""
+
 import os
 
 from base.base_helper import LOG_LEVEL
