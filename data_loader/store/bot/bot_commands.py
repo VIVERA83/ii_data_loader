@@ -6,4 +6,5 @@ bot_commands = [
     ("report_current_month", "Отчет за текущий месяц"),
     ("report_last_week", "Отчет за предыдущею неделю"),
     ("report_last_month", "Отчет за прошлый месяц"),
+    ("clear", "Очисть базу данных"),
 ]

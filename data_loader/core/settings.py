@@ -121,6 +121,7 @@ class TgSettings(Base):
     tg_api_id: int
     tg_api_hash: str
     tg_bot_token: str
+    tg_admin_id: int
 
 
 class ServiceSettings(Base):

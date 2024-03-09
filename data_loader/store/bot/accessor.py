@@ -1,6 +1,8 @@
 import re
 from typing import Callable, AsyncIterator
 import json
+
+from icecream import ic
 from telethon import TelegramClient, functions
 from telethon.events import NewMessage
 from telethon.tl.types import (
@@ -19,12 +21,15 @@ MIME_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 PATTERN = "[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])"
 
 
+
 class TgBotAccessor(BaseAccessor):
     """This class is responsible for managing the Telegram Bot connection and handling various events."""
 
     DOC_INVALID_MSG = "Invalid file format, expected an excel file."
     DOC_SUCCESS_MSG = "Document successfully added to the queue for database insertion."
     UNKNOWN_COMMAND_MSG = "Unknown command or document."
+    ERROR_MSG = "Something went wrong. Please try again later."
+    ACCESS_DENIED_MSG = "Access Denied. Please contact the administrator."
 
     settings: TgSettings
     _client: TelegramClient
@@ -57,7 +62,7 @@ class TgBotAccessor(BaseAccessor):
         self.bot.on(NewMessage())(self.event_handler)
 
     def make_async_iterator(
-        self, document: InputDocumentFileLocation
+            self, document: InputDocumentFileLocation
     ) -> Callable[[], AsyncIterator[bytes]]:
         """Creates an asynchronous iterator that can be used to download a file from Telegram's cloud storage.
 
@@ -72,7 +77,7 @@ class TgBotAccessor(BaseAccessor):
 
         async def iter_download():
             async for chunk in self.bot.iter_download(
-                document, chunk_size=1024 * 1024 * 1
+                    document, chunk_size=1024 * 1024 * 1
             ):
                 yield chunk
 
@@ -86,13 +91,20 @@ class TgBotAccessor(BaseAccessor):
 
         elif re.fullmatch(f"hello {PATTERN} {PATTERN}", event.raw_text):
             start_date, end_date = event.raw_text.split()[1:]
-            file = await fetch_report_by_date(start_date, end_date)
-            file.name = f"report_from {start_date}_to_{end_date}.xlsx"
-            message = f"Report from {start_date} to {end_date} ready."
+            try:
+                file = await fetch_report_by_date(start_date, end_date)
+                file.name = f"report_from {start_date}_to_{end_date}.xlsx"
+                message = f"Report from {start_date} to {end_date} ready."
+            except Exception as e:
+                self.logger.warning(e.args)
+                message = self.ERROR_MSG
 
-        elif event.raw_text == "clear":
-            data = await clear_database()
-            message = json.loads(data).get("status")
+        elif event.raw_text == "/clear":
+            message = self.ACCESS_DENIED_MSG
+            if event.sender_id == self.settings.tg_admin_id:
+                message = "Database cleared successfully."
+                # data = await clear_database()
+                # message = json.loads(data).get("status")
         elif event.raw_text == "test":
             message = f"{await test_request(event.raw_text)}"
         await event.reply(message, file=file)
