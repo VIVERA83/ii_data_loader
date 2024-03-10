@@ -7,13 +7,19 @@ from aiohttp import ClientSession
 
 from base.base_accessor import BaseAccessor
 from core.settings import ServiceSettings
-from store.report_service.time_utils import get_week_number, get_start_end_of_week, get_first_and_last_day_of_month, \
-    get_first_day_of_month
+from store.report_service.time_utils import (
+    get_week_number,
+    get_start_end_of_week,
+    get_first_and_last_day_of_month,
+    get_first_day_of_month,
+)
 
 
 class TGReportService(BaseAccessor):
     CLEAR_DATABASE_URL = "/analysis/clear_db/"
-    ANALYSIS_REPORT_URL = "/analysis/report/?start_date={start_date}&end_date={end_date}&kip_empty=true"
+    ANALYSIS_REPORT_URL = (
+        "/analysis/report/?start_date={start_date}&end_date={end_date}&kip_empty=true"
+    )
     bot_report_commands: list[tuple[str, str, Callable[[], Coroutine]]] = None
     settings: ServiceSettings = None
 
@@ -55,7 +61,9 @@ class TGReportService(BaseAccessor):
         Returns:
             BytesIO: A stream containing the report data.
         """
-        url = self.create_request_url(self.ANALYSIS_REPORT_URL, start_date=start_date, end_date=end_date)
+        url = self.create_request_url(
+            self.ANALYSIS_REPORT_URL, start_date=start_date, end_date=end_date
+        )
         response = await self.make_request(url)
         return BytesIO(response)
 
@@ -174,9 +182,21 @@ class TGReportService(BaseAccessor):
             ("report_week", "Отчет за неделю", self.get_report_week),
             ("report_month", "Отчет за месяц", self.get_report_month),
             ("report_current_day", "Отчет за текущий день", self.get_report_week),
-            ("report_current_week", "Отчет за текущею неделю", self.get_report_current_week),
-            ("report_current_month", "Отчет за текущий месяц", self.get_report_current_month),
-            ("report_last_week", "Отчет за предыдущею неделю", self.get_report_last_week),
+            (
+                "report_current_week",
+                "Отчет за текущею неделю",
+                self.get_report_current_week,
+            ),
+            (
+                "report_current_month",
+                "Отчет за текущий месяц",
+                self.get_report_current_month,
+            ),
+            (
+                "report_last_week",
+                "Отчет за предыдущею неделю",
+                self.get_report_last_week,
+            ),
             ("report_last_month", "Отчет за прошлый месяц", self.get_report_last_month),
             ("clear", "Очисть базу данных", self.get_report_week),
         ]

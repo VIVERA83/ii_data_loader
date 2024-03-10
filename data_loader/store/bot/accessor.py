@@ -75,7 +75,7 @@ class TgBotAccessor(BaseAccessor):
         return self.__command_handlers.get(command)
 
     def make_async_iterator(
-            self, document: InputDocumentFileLocation
+        self, document: InputDocumentFileLocation
     ) -> Callable[[], AsyncIterator[bytes]]:
         """Creates an asynchronous iterator that can be used to download a file from Telegram's cloud storage.
 
@@ -90,18 +90,22 @@ class TgBotAccessor(BaseAccessor):
 
         async def iter_download():
             async for chunk in self.bot.iter_download(
-                    document, chunk_size=1024 * 1024 * 1
+                document, chunk_size=1024 * 1024 * 1
             ):
                 yield chunk
 
         return iter_download
 
-    async def add_commands(self, commands: list[tuple[str, str, Callable[[], Coroutine]]]):
+    async def add_commands(
+        self, commands: list[tuple[str, str, Callable[[], Coroutine]]]
+    ):
         self.__commands.extend(commands)
         await self.__update_commands()
         self.__update_command_handlers()
 
-    async def remove_commands(self, commands: list[tuple[str, str, Callable[[], Coroutine]]]):
+    async def remove_commands(
+        self, commands: list[tuple[str, str, Callable[[], Coroutine]]]
+    ):
         for command in commands:
             if command in self.__commands:
                 try:
@@ -145,6 +149,7 @@ class TgBotAccessor(BaseAccessor):
 
     # async def __empty(self):
     #     self.logger.warning("Command not found")
+
 
 # elif re.fullmatch(f"hello {PATTERN} {PATTERN}", event.raw_text):
 #     start_date, end_date = event.raw_text.split()[1:]
