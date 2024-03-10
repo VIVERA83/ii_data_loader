@@ -1,4 +1,5 @@
 """The location of the final assembly of the application."""
+
 from core.components import Application
 from core.logger import setup_logging
 from core.middelware import setup_middleware

@@ -32,6 +32,7 @@ class BaseAccessor:
         """
         self.app = app
         self.logger = app.logger.getChild(self.__class__.__name__)
+
     def _init(self):
         """
         Perform any additional initialization actions.
@@ -41,6 +42,7 @@ class BaseAccessor:
 
         """
         pass
+
     async def connect(self):
         """
         Establish a connection to the system.
@@ -50,6 +52,7 @@ class BaseAccessor:
 
         """
         pass
+
     async def disconnect(self):
         """
         Close the connection to the system.

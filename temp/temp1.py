@@ -1,13 +1,12 @@
 from datetime import datetime, timedelta
 from io import BytesIO
-from typing import Coroutine, Callable
 from urllib.parse import urljoin
 
 from aiohttp import ClientSession
-from icecream import ic
 
 from base.base_accessor import BaseAccessor
 from core.settings import ServiceSettings
+from store.report_service.commands import BOT_REPORT_COMMANDS
 from store.report_service.time_utils import get_week_number, get_start_end_of_week, get_first_and_last_day_of_month, \
     get_first_day_of_month
 
@@ -15,17 +14,15 @@ from store.report_service.time_utils import get_week_number, get_start_end_of_we
 class TGReportService(BaseAccessor):
     CLEAR_DATABASE_URL = "/analysis/clear_db/"
     ANALYSIS_REPORT_URL = "/analysis/report/?start_date={start_date}&end_date={end_date}&kip_empty=true"
-    bot_report_commands: list[tuple[str, str, Callable[[], Coroutine]]] = None
     settings: ServiceSettings = None
 
     async def connect(self):
         self.settings = ServiceSettings()
-        self.bot_report_commands = self.create_report_commands()
-        await self.app.bot.add_commands(self.bot_report_commands)
+        await self.app.bot.add_commands(BOT_REPORT_COMMANDS)
         self.logger.info("Telegram Report Service connected")
 
     async def disconnect(self):
-        await self.app.bot.remove_commands(self.bot_report_commands)
+        await self.app.bot.remove_commands(BOT_REPORT_COMMANDS)
         self.logger.info("Telegram Report Service disconnected")
 
     def create_request_url(self, relative_url: str, **parameters) -> str:
@@ -169,15 +166,3 @@ class TGReportService(BaseAccessor):
         start = get_first_day_of_month(end)
 
         return await self.get_report(start, end, f"report_from {start}_to_{end}.xlsx")
-
-    def create_report_commands(self) -> list[tuple[str, str, Callable[[], Coroutine]]]:
-        return [
-            ("report_week", "Отчет за неделю", self.get_report_week),
-            ("report_month", "Отчет за месяц", self.get_report_month),
-            ("report_current_day", "Отчет за текущий день", self.get_report_week),
-            ("report_current_week", "Отчет за текущею неделю", self.get_report_current_week),
-            ("report_current_month", "Отчет за текущий месяц", self.get_report_current_month),
-            ("report_last_week", "Отчет за предыдущею неделю", self.get_report_last_week),
-            ("report_last_month", "Отчет за прошлый месяц", self.get_report_last_month),
-            ("clear", "Очисть базу данных", self.get_report_week),
-        ]

@@ -3,6 +3,8 @@ import logging
 from core.settings import AppSettings
 from fastapi import FastAPI
 from fastapi import Request as FastAPIRequest
+
+from store.bot.accessor import TgBotAccessor
 from store.store import Store
 
 class Application(FastAPI):
@@ -16,12 +18,14 @@ class Application(FastAPI):
         settings (AppSettings): The application settings.
         logger (logging.Logger): The application logger.
         docs_url (str): The URL of the documentation.
+        bot (TgBotAccessor): The telegram application/
     """
 
     store: Store
     settings: AppSettings
     logger: logging.Logger
     docs_url: str
+    bot: TgBotAccessor
 
 class Request(FastAPIRequest):
     """Request overrides.

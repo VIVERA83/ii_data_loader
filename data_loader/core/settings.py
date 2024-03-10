@@ -1,8 +1,9 @@
 """All application settings."""
+
 import os
 
 from base.base_helper import LOG_LEVEL
-from pydantic import field_validator
+from pydantic import AnyUrl, field_validator
 from pydantic_settings import BaseSettings
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__name__)))
@@ -120,7 +121,9 @@ class TgSettings(Base):
     tg_api_id: int
     tg_api_hash: str
     tg_bot_token: str
+    tg_admin_id: int
 
 
 class ServiceSettings(Base):
     base_url: str
+    clicker_base_url: str = "http://0.0.0.0:8010"

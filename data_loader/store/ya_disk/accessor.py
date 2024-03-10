@@ -1,5 +1,5 @@
 from io import BytesIO
-from typing import Optional, Callable, AsyncIterator
+from typing import AsyncIterator, Callable, Optional
 
 from base.base_accessor import BaseAccessor
 from core.settings import YaDiskSettings

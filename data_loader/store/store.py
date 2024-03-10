@@ -1,5 +1,7 @@
 """A module describing services for working with data."""
+
 from store.bot.accessor import TgBotAccessor
+from store.report_service.accessor import TGReportService
 from store.ya_disk.accessor import YaDiskAccessor
 
 
@@ -13,7 +15,8 @@ class Store:
             app: The application
         """
         self.ya_disk = YaDiskAccessor(app)
-        self.bot = TgBotAccessor(app)
+        self.tg_report = TGReportService(app)
+        # self.bot = TgBotAccessor(app)
 
 
 def setup_store(app):
@@ -26,4 +29,5 @@ def setup_store(app):
     Args:
         app: The application
     """
+    app.bot = TgBotAccessor(app)
     app.store = Store(app)
