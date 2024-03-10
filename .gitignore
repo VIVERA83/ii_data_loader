@@ -2,6 +2,7 @@
 .env_data_loader
 data_loader/bot.session
 data_loader/bot.session-journal
+temp/
 .idea/
 __pycache__/
 *.py[cod]
