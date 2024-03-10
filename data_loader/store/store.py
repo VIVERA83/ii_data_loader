@@ -2,6 +2,7 @@
 
 from store.bot.accessor import TgBotAccessor
 from store.report_service.accessor import TGReportService
+from store.upload_service.accessor import TGUpLoadService
 from store.ya_disk.accessor import YaDiskAccessor
 
 
@@ -16,7 +17,7 @@ class Store:
         """
         self.ya_disk = YaDiskAccessor(app)
         self.tg_report = TGReportService(app)
-        # self.bot = TgBotAccessor(app)
+        self.th_upload = TGUpLoadService(app)
 
 
 def setup_store(app):

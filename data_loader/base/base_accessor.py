@@ -21,9 +21,11 @@ class BaseAccessor:
 
         Sets up the connection to the third-party API as an example.
         """
+        self.logger.info(f"{self.__class__.__name__} connected.")
 
     async def disconnect(self):
         """The logic responsible for disconnecting and cleaning up.
 
         Ensures that all connections are closed correctly.
         """
+        self.logger.info(f"{self.__class__.__name__} disconnected.")

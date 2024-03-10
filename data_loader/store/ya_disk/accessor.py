@@ -54,7 +54,7 @@ class YaDiskAccessor(BaseAccessor):
             self.settings.ya_client_id, token=self.settings.ya_token, session="aiohttp"
         )
         await self.__setup()
-        self.logger.info("Yandex disk client connected")
+        self.logger.info(f"{self.__class__.__name__} connected.")
 
     async def disconnect(self):
         """Disconnects from the Yandex Disk API.
@@ -66,7 +66,7 @@ class YaDiskAccessor(BaseAccessor):
             None: Returns nothing.
         """
         await self.client.close()
-        self.logger.info("Yandex disk client disconnected")
+        self.logger.info(f"{self.__class__.__name__} disconnected.")
 
     @_check_token  # noqa:
     async def __setup(self):

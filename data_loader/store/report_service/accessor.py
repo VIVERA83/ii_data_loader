@@ -7,13 +7,17 @@ from urllib.parse import urljoin
 from aiohttp import ClientSession
 from base.base_accessor import BaseAccessor
 from core.settings import ServiceSettings
-from store.report_service.time_utils import (get_first_and_last_day_of_month,
-                                             get_first_day_of_month,
-                                             get_start_end_of_week,
-                                             get_week_number)
+from store.report_service.time_utils import (
+    get_first_and_last_day_of_month,
+    get_first_day_of_month,
+    get_start_end_of_week,
+    get_week_number,
+)
+from telethon.events.newmessage import NewMessage
 
 
 class TGReportService(BaseAccessor):
+    ACCESS_DENIED_MSG = "Access Denied. Please contact the administrator."
     CLEAR_DATABASE_URL = "/analysis/clear_db/"
     ANALYSIS_REPORT_URL = (
         "/analysis/report/?start_date={start_date}&end_date={end_date}&kip_empty=true"
@@ -21,17 +25,29 @@ class TGReportService(BaseAccessor):
     PATTERN = "[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])"
     bot_report_commands: list[tuple[str, str, Callable[[], Coroutine]]] = None
     settings: ServiceSettings = None
+    tg_admin_id = 18959682531
+
+    def check_access(self: Callable):
+        async def wrapper(cls: "TGReportService", event: NewMessage.Event):
+            async def wrapped(*args, **kwargs):
+                if event.sender_id != cls.tg_admin_id:
+                    return cls.ACCESS_DENIED_MSG
+                return await self(cls, *args, **kwargs)
+
+            return await wrapped()
+
+        return wrapper
 
     async def connect(self):
         self.settings = ServiceSettings()
         self.bot_report_commands = self.create_report_commands()
         await self.app.bot.add_commands(self.bot_report_commands)
         self.app.bot.update_regex_command_handler(self.create_report_regex_command())
-        self.logger.info("Telegram Report Service connected")
+        self.logger.info(f"{self.__class__.__name__} connected.")
 
     async def disconnect(self):
         await self.app.bot.remove_commands(self.bot_report_commands)
-        self.logger.info("Telegram Report Service disconnected")
+        self.logger.info(f"{self.__class__.__name__} disconnected.")
 
     def create_request_url(self, relative_url: str, **parameters) -> str:
         url = urljoin(self.settings.base_url, relative_url.format(**parameters))
@@ -42,6 +58,7 @@ class TGReportService(BaseAccessor):
         async with ClientSession() as session, session.get(url) as response:
             return await response.read()
 
+    @check_access  # noqa
     async def clear_database(self):
         """
         Asynchronously clears the database by sending a request to the specified URL and returning the response.
@@ -68,7 +85,7 @@ class TGReportService(BaseAccessor):
         return BytesIO(response)
 
     async def get_report(
-        self, start_date: str, end_date: str, name: str = None
+        self, start_date: str, end_date: str, name: str = None, *_, **__
     ) -> BytesIO:
         """
         Async function to get a report within a specific date range and assign a name to the report file.
@@ -86,7 +103,7 @@ class TGReportService(BaseAccessor):
         file.name = name if name else f"report_from {start_date}_to_{end_date}.xlsx"
         return file
 
-    async def get_report_week(self) -> BytesIO:
+    async def get_report_week(self, *_, **__) -> BytesIO:
         """
         Asynchronous function that retrieves a report for the past week and returns it as a BytesIO object.
         No parameters are accepted.
@@ -100,7 +117,7 @@ class TGReportService(BaseAccessor):
 
         return await self.get_report(start, end, f"report_from {start}_to_{end}.xlsx")
 
-    async def get_report_month(self) -> BytesIO:
+    async def get_report_month(self, *_, **__) -> BytesIO:
         """
         Asynchronous function to get the report for the current month.
         It returns a BytesIO object.
@@ -114,7 +131,7 @@ class TGReportService(BaseAccessor):
 
         return await self.get_report(start, end, f"report_from {start}_to_{end}.xlsx")
 
-    async def get_report_current_day(self) -> BytesIO:
+    async def get_report_current_day(self, *_, **__) -> BytesIO:
         """
         Asynchronously gets the report for the current day.
         Returns a BytesIO object.
@@ -125,7 +142,7 @@ class TGReportService(BaseAccessor):
         start = datetime.now().strftime("%Y-%m-%d")
         return await self.get_report(start, start, f"report_from {start}.xlsx")
 
-    async def get_report_current_week(self) -> BytesIO:
+    async def get_report_current_week(self, *_, **__) -> BytesIO:
         """
         Asynchronously gets the report for the current week.
         Returns a BytesIO object.
@@ -139,7 +156,7 @@ class TGReportService(BaseAccessor):
 
         return await self.get_report(start, end, f"report_from {start}_to_{end}.xlsx")
 
-    async def get_report_current_month(self) -> BytesIO:
+    async def get_report_current_month(self, *_, **__) -> BytesIO:
         """
         Asynchronously gets the report for the current month.
         Returns a BytesIO object.
@@ -150,7 +167,7 @@ class TGReportService(BaseAccessor):
         start, end = get_first_and_last_day_of_month()
         return await self.get_report(start, end, f"report_from {start}_to_{end}.xlsx")
 
-    async def get_report_last_week(self) -> BytesIO:
+    async def get_report_last_week(self, *_, **__) -> BytesIO:
         """
         Asynchronously gets the report for the last week.
         Returns a BytesIO object.
@@ -164,7 +181,7 @@ class TGReportService(BaseAccessor):
 
         return await self.get_report(start, end, f"report_from {start}_to_{end}.xlsx")
 
-    async def get_report_last_month(self) -> BytesIO:
+    async def get_report_last_month(self, *_, **__) -> BytesIO:
         """
         Asynchronously gets the report for the last month.
         Returns a BytesIO object.
@@ -200,7 +217,7 @@ class TGReportService(BaseAccessor):
                 self.get_report_last_week,
             ),
             ("report_last_month", "Отчет за прошлый месяц", self.get_report_last_month),
-            ("clear", "Очисть базу данных", self.get_report_week),
+            ("clear", "Очисть базу данных", self.clear_database),
         ]
 
     def create_report_regex_command(
