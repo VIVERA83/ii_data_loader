@@ -4,7 +4,6 @@ from typing import Coroutine, Callable
 from urllib.parse import urljoin
 
 from aiohttp import ClientSession
-from icecream import ic
 
 from base.base_accessor import BaseAccessor
 from core.settings import ServiceSettings
