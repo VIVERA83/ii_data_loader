@@ -1,6 +1,6 @@
-from aiohttp import ClientSession
 from urllib.parse import urljoin
 
+from aiohttp import ClientSession
 from core.settings import ServiceSettings
 
 BASE_URL = ServiceSettings().clicker_base_url
