@@ -127,3 +127,4 @@ class TgSettings(Base):
 class ServiceSettings(Base):
     base_url: str
     clicker_base_url: str = "http://0.0.0.0:8010"
+    tg_admin_id: int

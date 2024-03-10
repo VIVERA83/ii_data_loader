@@ -1,3 +1,4 @@
+import json
 import re
 from datetime import datetime, timedelta
 from io import BytesIO
@@ -25,12 +26,11 @@ class TGReportService(BaseAccessor):
     PATTERN = "[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])"
     bot_report_commands: list[tuple[str, str, Callable[[], Coroutine]]] = None
     settings: ServiceSettings = None
-    tg_admin_id = 18959682531
 
     def check_access(self: Callable):
         async def wrapper(cls: "TGReportService", event: NewMessage.Event):
             async def wrapped(*args, **kwargs):
-                if event.sender_id != cls.tg_admin_id:
+                if event.sender_id != cls.settings.tg_admin_id:
                     return cls.ACCESS_DENIED_MSG
                 return await self(cls, *args, **kwargs)
 
@@ -59,13 +59,13 @@ class TGReportService(BaseAccessor):
             return await response.read()
 
     @check_access  # noqa
-    async def clear_database(self):
+    async def clear_database(self) -> str:
         """
         Asynchronously clears the database by sending a request to the specified URL and returning the response.
         """
         url = self.create_request_url(self.CLEAR_DATABASE_URL)
         response = await self.make_request(url)
-        return response
+        return json.loads(response.decode("utf-8")).get("message")
 
     async def get_report_by_date(self, start_date: str, end_date: str) -> BytesIO:
         """
@@ -85,7 +85,7 @@ class TGReportService(BaseAccessor):
         return BytesIO(response)
 
     async def get_report(
-        self, start_date: str, end_date: str, name: str = None, *_, **__
+            self, start_date: str, end_date: str, name: str = None, *_, **__
     ) -> BytesIO:
         """
         Async function to get a report within a specific date range and assign a name to the report file.
@@ -221,7 +221,7 @@ class TGReportService(BaseAccessor):
         ]
 
     def create_report_regex_command(
-        self,
+            self,
     ) -> dict[re.Pattern, Callable[[Any], Coroutine[None, None, None]]]:
         return {  # noqa
             re.compile(f"/report {self.PATTERN} {self.PATTERN}"): self.get_report
