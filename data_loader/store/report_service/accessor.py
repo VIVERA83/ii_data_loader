@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 from io import BytesIO
-from typing import Coroutine, Callable
+from typing import Coroutine, Callable, Any
 from urllib.parse import urljoin
-
+import re
 from aiohttp import ClientSession
 
 from base.base_accessor import BaseAccessor
@@ -20,6 +20,7 @@ class TGReportService(BaseAccessor):
     ANALYSIS_REPORT_URL = (
         "/analysis/report/?start_date={start_date}&end_date={end_date}&kip_empty=true"
     )
+    PATTERN = "[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])"
     bot_report_commands: list[tuple[str, str, Callable[[], Coroutine]]] = None
     settings: ServiceSettings = None
 
@@ -27,6 +28,7 @@ class TGReportService(BaseAccessor):
         self.settings = ServiceSettings()
         self.bot_report_commands = self.create_report_commands()
         await self.app.bot.add_commands(self.bot_report_commands)
+        self.app.bot.update_regex_command_handler(self.create_report_regex_command())
         self.logger.info("Telegram Report Service connected")
 
     async def disconnect(self):
@@ -67,7 +69,9 @@ class TGReportService(BaseAccessor):
         response = await self.make_request(url)
         return BytesIO(response)
 
-    async def get_report(self, start_date: str, end_date: str, name: str) -> BytesIO:
+    async def get_report(
+        self, start_date: str, end_date: str, name: str = None
+    ) -> BytesIO:
         """
         Async function to get a report within a specific date range and assign a name to the report file.
         Takes in start_date (str), end_date (str), and name (str) as parameters and returns a BytesIO object.
@@ -81,7 +85,7 @@ class TGReportService(BaseAccessor):
             BytesIO: A stream containing the report data.
         """
         file = await self.get_report_by_date(start_date, end_date)
-        file.name = name
+        file.name = name if name else f"report_from {start_date}_to_{end_date}.xlsx"
         return file
 
     async def get_report_week(self) -> BytesIO:
@@ -200,3 +204,10 @@ class TGReportService(BaseAccessor):
             ("report_last_month", "Отчет за прошлый месяц", self.get_report_last_month),
             ("clear", "Очисть базу данных", self.get_report_week),
         ]
+
+    def create_report_regex_command(
+        self,
+    ) -> dict[re.Pattern, Callable[[Any], Coroutine[None, None, None]]]:
+        return {
+            re.compile(f"/report {self.PATTERN} {self.PATTERN}"): self.get_report
+        }  # noqa

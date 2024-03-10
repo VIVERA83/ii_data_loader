@@ -1,4 +1,6 @@
-from typing import AsyncIterator, Awaitable, Callable, Coroutine, Optional
+from io import BytesIO
+from re import Pattern
+from typing import AsyncIterator, Awaitable, Callable, Coroutine, Optional, Any
 
 from aiohttp import ClientConnectorError
 
@@ -31,11 +33,15 @@ class TgBotAccessor(BaseAccessor):
     bot: TelegramClient
     __commands: list[tuple[str, str, Callable[[], Coroutine]]]
     __command_handlers: dict[str, Callable[[], Coroutine[None, None, None]]]
+    __commands_regex_handler: dict[
+        Pattern, Callable[[Any], Coroutine[None, None, None]]
+    ]
     lang_codes = ["ru", "en"]
 
     async def connect(self):
-        self.__command_handlers = {}
         self.__commands = []
+        self.__command_handlers = {}
+        self.__commands_regex_handler = {}
         self.settings = TgSettings()
         self._client = TelegramClient(
             "bot", api_hash=self.settings.tg_api_hash, api_id=self.settings.tg_api_id
@@ -44,6 +50,7 @@ class TgBotAccessor(BaseAccessor):
             bot_token=self.settings.tg_bot_token
         )
         self.bot.on(NewMessage())(self.event_handler)
+        await self.add_commands(self.create_start_command())
         self.logger.info("Telegram Bot connected")
 
     async def disconnect(self):
@@ -65,9 +72,22 @@ class TgBotAccessor(BaseAccessor):
 
         elif handler := self.get_handler(event.raw_text):
             try:
-                file = await handler()
+                data = await handler()
+                if isinstance(data, BytesIO):
+                    file = data
+                    message = self.DOC_SUCCESS_MSG
+                else:
+                    message = data
             except ClientConnectorError:
                 message = self.ERROR_MSG
+
+        elif self.__commands_regex_handler:
+            for pattern, handler in self.__commands_regex_handler.items():
+                if pattern.fullmatch(event.raw_text):
+                    try:
+                        await handler(*event.raw_text.split()[1:])
+                    except ClientConnectorError:
+                        message = self.ERROR_MSG
 
         await event.reply(message, file=file)
 
@@ -135,6 +155,11 @@ class TgBotAccessor(BaseAccessor):
             f"/{command}": handler for command, _, handler in self.__commands
         }
 
+    def update_regex_command_handler(
+        self, command: dict[Pattern, Callable[[Any], Coroutine]]
+    ):
+        self.__commands_regex_handler.update(command)
+
     async def __document_loader(self, event) -> str:
         message = self.DOC_INVALID_MSG
         if event.document.mime_type == MIME_TYPE:
@@ -147,26 +172,11 @@ class TgBotAccessor(BaseAccessor):
         )
         return message
 
-    # async def __empty(self):
-    #     self.logger.warning("Command not found")
+    def create_start_command(self) -> list[tuple[str, str, Callable[[], Coroutine]]]:
+        return [
+            ("start", "знакомство с ботом", self.start),  # noqa
+        ]
 
-
-# elif re.fullmatch(f"hello {PATTERN} {PATTERN}", event.raw_text):
-#     start_date, end_date = event.raw_text.split()[1:]
-#     try:
-#         file = await fetch_report_by_date(start_date, end_date)
-#         file.name = f"report_from {start_date}_to_{end_date}.xlsx"
-#         message = f"Report from {start_date} to {end_date} ready."
-#     except Exception as e:
-#         self.logger.warning(e.args)
-#         message = self.ERROR_MSG
-#
-# elif event.raw_text == "/clear":
-#     message = self.ACCESS_DENIED_MSG
-#     if event.sender_id == self.settings.tg_admin_id:
-#         message = "Database cleared successfully."
-#         # data = await clear_database()
-#         # message = json.loads(data).get("status")
-#
-# elif event.raw_text == "test":
-#     message = f"{await test_request(event.raw_text)}"
+    @staticmethod
+    async def start():
+        return """Привет, я бот для выгрузки отчётов за любой отчетный переуд."""
