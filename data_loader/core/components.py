@@ -3,7 +3,6 @@ import logging
 from core.settings import AppSettings
 from fastapi import FastAPI
 from fastapi import Request as FastAPIRequest
-
 from store.bot.accessor import TgBotAccessor
 from store.store import Store
 

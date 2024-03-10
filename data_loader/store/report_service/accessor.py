@@ -1,18 +1,16 @@
+import re
 from datetime import datetime, timedelta
 from io import BytesIO
-from typing import Coroutine, Callable, Any
+from typing import Any, Callable, Coroutine
 from urllib.parse import urljoin
-import re
-from aiohttp import ClientSession
 
+from aiohttp import ClientSession
 from base.base_accessor import BaseAccessor
 from core.settings import ServiceSettings
-from store.report_service.time_utils import (
-    get_week_number,
-    get_start_end_of_week,
-    get_first_and_last_day_of_month,
-    get_first_day_of_month,
-)
+from store.report_service.time_utils import (get_first_and_last_day_of_month,
+                                             get_first_day_of_month,
+                                             get_start_end_of_week,
+                                             get_week_number)
 
 
 class TGReportService(BaseAccessor):
@@ -208,6 +206,6 @@ class TGReportService(BaseAccessor):
     def create_report_regex_command(
         self,
     ) -> dict[re.Pattern, Callable[[Any], Coroutine[None, None, None]]]:
-        return {
+        return {  # noqa
             re.compile(f"/report {self.PATTERN} {self.PATTERN}"): self.get_report
-        }  # noqa
+        }

@@ -1,19 +1,14 @@
 from io import BytesIO
 from re import Pattern
-from typing import AsyncIterator, Awaitable, Callable, Coroutine, Optional, Any
+from typing import Any, AsyncIterator, Awaitable, Callable, Coroutine, Optional
 
 from aiohttp import ClientConnectorError
-
 from base.base_accessor import BaseAccessor
 from core.settings import TgSettings
-
 from telethon import TelegramClient, functions
 from telethon.events import NewMessage
-from telethon.tl.types import (
-    BotCommand,
-    BotCommandScopeDefault,
-    InputDocumentFileLocation,
-)
+from telethon.tl.types import (BotCommand, BotCommandScopeDefault,
+                               InputDocumentFileLocation)
 
 MIME_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 PATTERN = "[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])"
