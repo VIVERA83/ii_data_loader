@@ -52,13 +52,14 @@ class TgBotAccessor(BaseAccessor):
         else:
             handler = self.get_handler(event.raw_text)
             if handler is None:
-                for pattern, handler in self.__commands_regex_handler.items():
+                for pattern, _handler in self.__commands_regex_handler.items():
                     if pattern.fullmatch(event.raw_text):
+                        handler = _handler
                         break
-                    handler = None
+        self.logger.warning(f"handler: {handler} {event.raw_text.split()[1:]}")
         if handler:
             try:
-                result = await handler(event, *event.raw_text.split()[1:])  # noqa
+                result = await handler(*event.raw_text.split()[1:])  # noqa
                 if isinstance(result, BytesIO):
                     file = result
                     message = self.SUCCESS_MSG
@@ -114,7 +115,7 @@ class TgBotAccessor(BaseAccessor):
 
     @staticmethod
     async def start(*_, **__):
-        return """Привет, я бот для выгрузки отчётов за любой отчетный переуд."""
+        return """Привет, я бот для выгрузки отчётов за отчетный период."""
 
     async def __update_commands(self):
         [

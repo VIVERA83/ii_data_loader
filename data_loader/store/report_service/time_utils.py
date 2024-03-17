@@ -3,7 +3,6 @@ from typing import Tuple
 
 
 def get_week_number(date_string: str = datetime.now().strftime("%Y-%m-%d")) -> int:
-
     date = datetime.strptime(date_string, "%Y-%m-%d")
     return date.isocalendar()[1]
 
@@ -28,7 +27,7 @@ def get_start_end_of_week(year, week_number):
 
 
 def get_first_day_of_month(
-    date_string: str = datetime.now().strftime("%Y-%m-%d"),
+        date_string: str = datetime.now().strftime("%Y-%m-%d"),
 ) -> str:
     """
     Get the first day of the month for the given date string.
@@ -46,7 +45,7 @@ def get_first_day_of_month(
 
 
 def get_last_day_of_month(
-    date_string: str = datetime.now().strftime("%Y-%m-%d"),
+        date_string: str = datetime.now().strftime("%Y-%m-%d"),
 ) -> str:
     """
     Get the last day of the month for the given date string.
@@ -68,7 +67,7 @@ def get_last_day_of_month(
 
 
 def get_first_and_last_day_of_month(
-    date_string: str = datetime.now().strftime("%Y-%m-%d"),
+        date_string: str = datetime.now().strftime("%Y-%m-%d"),
 ) -> Tuple[str, str]:
     """
     Get the first and last day of the month for the given date string.
