@@ -56,7 +56,6 @@ class TgBotAccessor(BaseAccessor):
                     if pattern.fullmatch(event.raw_text):
                         handler = _handler
                         break
-        self.logger.warning(f"handler: {handler} {event.raw_text.split()[1:]}")
         if handler:
             try:
                 result = await handler(*event.raw_text.split()[1:])  # noqa
