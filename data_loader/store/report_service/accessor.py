@@ -85,7 +85,7 @@ class TGReportService(BaseAccessor):
         return BytesIO(response)
 
     async def get_report(
-            self, start_date: str, end_date: str, name: str = None, *_, **__
+        self, start_date: str, end_date: str, name: str = None, *_, **__
     ) -> BytesIO:
         """
         Async function to get a report within a specific date range and assign a name to the report file.
@@ -221,7 +221,7 @@ class TGReportService(BaseAccessor):
         ]
 
     def create_report_regex_command(
-            self,
+        self,
     ) -> dict[re.Pattern, Callable[[Any], Coroutine[None, None, None]]]:
         return {  # noqa
             re.compile(f"/report {self.PATTERN} {self.PATTERN}"): self.get_report
