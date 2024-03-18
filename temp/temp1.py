@@ -3,17 +3,20 @@ from io import BytesIO
 from urllib.parse import urljoin
 
 from aiohttp import ClientSession
-
 from base.base_accessor import BaseAccessor
 from core.settings import ServiceSettings
 from store.report_service.commands import BOT_REPORT_COMMANDS
-from store.report_service.time_utils import get_week_number, get_start_end_of_week, get_first_and_last_day_of_month, \
-    get_first_day_of_month
+from store.report_service.time_utils import (get_first_and_last_day_of_month,
+                                             get_first_day_of_month,
+                                             get_start_end_of_week,
+                                             get_week_number)
 
 
 class TGReportService(BaseAccessor):
     CLEAR_DATABASE_URL = "/analysis/clear_db/"
-    ANALYSIS_REPORT_URL = "/analysis/report/?start_date={start_date}&end_date={end_date}&kip_empty=true"
+    ANALYSIS_REPORT_URL = (
+        "/analysis/report/?start_date={start_date}&end_date={end_date}&kip_empty=true"
+    )
     settings: ServiceSettings = None
 
     async def connect(self):
@@ -53,7 +56,9 @@ class TGReportService(BaseAccessor):
         Returns:
             BytesIO: A stream containing the report data.
         """
-        url = self.create_request_url(self.ANALYSIS_REPORT_URL, start_date=start_date, end_date=end_date)
+        url = self.create_request_url(
+            self.ANALYSIS_REPORT_URL, start_date=start_date, end_date=end_date
+        )
         response = await self.make_request(url)
         return BytesIO(response)
 

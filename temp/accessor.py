@@ -4,12 +4,10 @@ from urllib.parse import urljoin
 
 from aiohttp import ClientSession
 from core.settings import ServiceSettings
-from store.report_service.time_utils import (
-    get_first_and_last_day_of_month,
-    get_first_day_of_month,
-    get_start_end_of_week,
-    get_week_number,
-)
+from store.report_service.time_utils import (get_first_and_last_day_of_month,
+                                             get_first_day_of_month,
+                                             get_start_end_of_week,
+                                             get_week_number)
 
 ANALYSIS_REPORT_URL = (
     "/analysis/report/?start_date={start_date}&end_date={end_date}&kip_empty=true"

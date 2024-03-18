@@ -58,7 +58,7 @@ class TgBotAccessor(BaseAccessor):
                         break
         if handler:
             try:
-                result = await handler(*event.raw_text.split()[1:])  # noqa
+                result = await handler(*event.raw_text.split()[1:], event=event)  # noqa
                 if isinstance(result, BytesIO):
                     file = result
                     message = self.SUCCESS_MSG
