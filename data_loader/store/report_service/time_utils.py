@@ -7,7 +7,7 @@ def get_week_number(date_string: str = datetime.now().strftime("%Y-%m-%d")) -> i
     return date.isocalendar()[1]
 
 
-def get_start_end_of_week(year, week_number):
+def get_start_end_of_week(year: int, week_number: int):
     """
     Get the start and end dates of a specific week in a given year.
 
