@@ -13,9 +13,9 @@ class TGUpLoadService(BaseAccessor):
     DOC_SUCCESS_MSG = "Document successfully added to the queue for database insertion."
 
     async def connect(self):
-        await self.app.bot.update_document_command_handler(
-            {self.MIME_TYPE: self.__document_loader}
-        )
+        # await self.app.bot.update_document_command_handler(
+        #     {self.MIME_TYPE: self.__document_loader}
+        # )
         self.logger.info(f"{self.__class__.__name__} connected.")
 
     async def __document_loader(self, event: NewMessage.Event) -> str:
